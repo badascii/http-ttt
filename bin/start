@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+require_relative '../lib/server'
+
+port = ARGV[0] || 2000
+
+host = ARGV[1] || 'localhost'
+
+server = Server.new(port, host)
+
+puts "Starting server on port #{port} on #{host}..."
+
+server.start
+
+server.join
+
