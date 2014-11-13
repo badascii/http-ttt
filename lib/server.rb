@@ -29,14 +29,10 @@ class Server < GServer
       mode: 'cpu'
       }
       @game = Game.new(opts)
-      generate_template
+      @game.write_template
     # @games = {}
   end
 
-  def generate_template
-    html = ERB.new(game.game_template)
-    File.write('./public/game.html', html.run(game.get_binding))
-  end
 
   def serve(client)
     loop do
@@ -44,12 +40,10 @@ class Server < GServer
       # session = CGI::Session.new(cgi)
       # id      = session.session_id
 
-      # find_game(id)
-
 
       line    = client.readline
       path    = requested_file(line)
-      # path    = File.join(path, 'index.html') if File.directory?(path)
+      path    = File.join(path, 'index.html') if File.directory?(path)
 
       puts line
       puts "Got request for: #{path}"

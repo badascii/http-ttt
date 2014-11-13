@@ -124,6 +124,11 @@ class Game
     }
   end
 
+  def write_template
+    html = ERB.new(game_template)
+    File.write('./public/game.html', html.result(get_binding))
+  end
+
   private
 
   def game_class
