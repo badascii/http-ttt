@@ -40,7 +40,6 @@ class Server < GServer
       # session = CGI::Session.new(cgi)
       # id      = session.session_id
 
-
       line    = client.readline
       path    = requested_file(line)
       path    = File.join(path, 'index.html') if File.directory?(path)

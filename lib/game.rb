@@ -38,12 +38,8 @@ class Game
     }
   end
 
-  def get_binding
-    binding
-  end
-
   def game_template
-    template = %q{
+    %q{
       <html>
         <body>
           <h1>Tic-Tac-Toe</h1>
@@ -146,4 +142,9 @@ class Game
       Game3x3::GRID
     end
   end
+
+  def get_binding
+    binding
+  end
+
 end
