@@ -20,25 +20,21 @@ class Server < GServer
   STATUS_MESSAGES = {200 => 'OK',
                      404 => 'Not Found'}
 
-  attr_accessor :game
-
   def initialize(port=2000, *args)
     super(port, *args)
-    opts = {
-      size: '3x3',
-      mode: 'cpu'
-      }
-      @game = Game.new(opts)
-      @game.write_template
-    # @games = {}
   end
-
 
   def serve(client)
     loop do
       # cgi     = CGI.new('html4')
       # session = CGI::Session.new(cgi)
       # id      = session.session_id
+      opts = {
+        size: '3x3',
+        mode: 'cpu'
+      }
+      game = Game.new(opts)
+      game.write_template
 
       line    = client.readline
       path    = requested_file(line)
