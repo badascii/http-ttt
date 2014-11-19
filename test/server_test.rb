@@ -58,6 +58,15 @@ class TestServer < MiniTest::Test
     assert_equal(true, @server.valid_file?(game_path))
   end
 
+  def test_parse_param_string
+    expected_hash = { mode: 'cpu',
+                      size: '3x3'}
+    param_string  = 'mode=cpu&size=3x3'
+    param_hash    = @server.parse_param_string(param_string)
+
+    assert_equal(expected_hash, param_hash)
+  end
+
   def test_param_regex
     expected_hash = { mode: 'cpu',
                       size: '3x3'}
@@ -65,6 +74,15 @@ class TestServer < MiniTest::Test
     params        = @server.build_param_hash(param_request)
 
     assert_equal(expected_hash, params)
+  end
+
+  def test_get_post_params
+    expected_hash = { mode: 'cpu',
+                      size: '3x3'}
+    post_data  = 'BIG STRING'
+    param_hash = @server.get_post_params(post_data)
+
+    assert_equal(expected_hash, param_hash)
   end
 
   def test_200_header

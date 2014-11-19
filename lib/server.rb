@@ -31,6 +31,16 @@ class Server < GServer
       # id      = session.session_id
 
       line   = client.readline
+      path   = requested_file(line)
+      path   = File.join(path, 'index.html') if File.directory?(path)
+
+      if line.include?('POST')
+        post_data    = client.read(517)
+        param_string = post_data.split(//).last(18).join
+
+        # game   = Game.new(param_hash)
+        # game.write_template
+      end
 
       if line.include?('?')
         params = build_param_hash(line)
@@ -38,10 +48,6 @@ class Server < GServer
         game.write_template
       end
 
-
-      path   = requested_file(line)
-      path   = File.join(path, 'index.html') if File.directory?(path)
-      puts line
       puts "Got request for: #{path}"
       send_response(path, client)
     end
@@ -108,6 +114,10 @@ class Server < GServer
       param_hash[key.to_sym] = value
     end
     return param_hash
+  end
+
+  def get_post_params
+
   end
 
   def params(request_uri)
