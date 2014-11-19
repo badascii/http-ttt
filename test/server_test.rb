@@ -41,6 +41,12 @@ class TestServer < MiniTest::Test
     assert_equal(file, './public/index.html')
   end
 
+  def test_request_with_params
+    line = 'GET /game.html?mode=cpu&size=3x3 HTTP/1.1'
+    file = @server.requested_file(line)
+    assert_equal(file, './public/game.html')
+  end
+
   def test_valid_file
     index_path = './public/index.html'
     game_path  = './public/game.html'
