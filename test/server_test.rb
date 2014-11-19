@@ -20,6 +20,7 @@ class TestServer < MiniTest::Test
 
   def test_default_content_type
     default_content_type = @server.content_type('file.blah')
+
     assert_equal(default_content_type, 'application/octet-stream')
   end
 
@@ -38,12 +39,14 @@ class TestServer < MiniTest::Test
   def test_requested_file
     line = 'GET /index.html HTTP/1.1'
     file = @server.requested_file(line)
+
     assert_equal(file, './public/index.html')
   end
 
   def test_request_with_params
     line = 'GET /game.html?mode=cpu&size=3x3 HTTP/1.1'
     file = @server.requested_file(line)
+
     assert_equal(file, './public/game.html')
   end
 
@@ -55,11 +58,21 @@ class TestServer < MiniTest::Test
     assert_equal(true, @server.valid_file?(game_path))
   end
 
+  def test_param_regex
+    expected_hash = { mode: 'cpu',
+                      size: '3x3'}
+    param_path = '/game.html?mode=cpu&size=3x3'
+    params     = @server.parse_params(param_path)
+
+    assert_equal(expected_hash, params)
+  end
+
   def test_200_header
     code   = 200
     type   = Server::DEFAULT_CONTENT_TYPE
     length = 10
     header = @server.build_header(code, type, length)
+
     assert_equal(header, "HTTP/1.1 200 OK\r\n" +
                          "Content-Type: application/octet-stream\r\n" +
                          "Content-Length: 10\r\n" +
@@ -71,6 +84,7 @@ class TestServer < MiniTest::Test
     type   = Server::CONTENT_TYPES['txt']
     length = 10
     header = @server.build_header(code, type, length)
+
     assert_equal(header, "HTTP/1.1 404 Not Found\r\n" +
                          "Content-Type: text/plain\r\n" +
                          "Content-Length: 10\r\n" +
