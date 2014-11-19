@@ -29,18 +29,18 @@ class Server < GServer
       # cgi     = CGI.new
       # session = CGI::Session.new(cgi)
       # id      = session.session_id
-      size = '3x3'
-      mode = 'human'
 
-      options = { size: size,
-                  mode: mode}
+      line   = client.readline
 
-      game = Game.new(options)
-      game.write_template
+      if line.include?('?')
+        params = parse_params(line)
+        game   = Game.new(params)
+        game.write_template
+      end
 
-      line    = client.readline
-      path    = requested_file(line)
-      path    = File.join(path, 'index.html') if File.directory?(path)
+
+      path   = requested_file(line)
+      path   = File.join(path, 'index.html') if File.directory?(path)
       puts line
       puts "Got request for: #{path}"
       send_response(path, client)
@@ -99,7 +99,15 @@ class Server < GServer
   end
 
   def parse_params(line)
-    request_uri  = line.split(' ')[1]
+    request_uri   = line.split(' ')[1]
+    param_hash    = {}
+
+    request_uri.split('?')[1].split('&').each do |param|
+      key   = param.split('=')[0]
+      value = param.split('=')[1]
+      param_hash[key.to_sym] = value
+    end
+    return param_hash
   end
 
   # def create_session
