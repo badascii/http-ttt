@@ -107,7 +107,7 @@ class Game
           </table>
           </br>
           <% if @grid.has_value?(' ') || @grid.has_value?(0)%>
-            <form method='post' action='/game/move'>
+            <form method='post' action='/game.html'>
               <label for='grid_position'>Grid position:</label>
               <input type='text' name='grid_position' id='grid_position' autofocus />
               <input type='submit' value='Submit' />

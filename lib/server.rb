@@ -26,20 +26,21 @@ class Server < GServer
 
   def serve(client)
     loop do
-      # cgi     = CGI.new('html4')
+      # cgi     = CGI.new
       # session = CGI::Session.new(cgi)
       # id      = session.session_id
-      opts = {
-        size: '3x3',
-        mode: 'cpu'
-      }
-      game = Game.new(opts)
+      size = '3x3'
+      mode = 'human'
+
+      options = { size: size,
+                  mode: mode}
+
+      game = Game.new(options)
       game.write_template
 
       line    = client.readline
       path    = requested_file(line)
       path    = File.join(path, 'index.html') if File.directory?(path)
-
       puts line
       puts "Got request for: #{path}"
       send_response(path, client)
