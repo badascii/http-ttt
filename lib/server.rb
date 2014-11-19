@@ -33,7 +33,7 @@ class Server < GServer
       line   = client.readline
 
       if line.include?('?')
-        params = parse_params(line)
+        params = build_param_hash(line)
         game   = Game.new(params)
         game.write_template
       end
@@ -98,16 +98,20 @@ class Server < GServer
     "Connection: close\r\n"
   end
 
-  def parse_params(line)
+  def build_param_hash(line)
     request_uri   = line.split(' ')[1]
     param_hash    = {}
 
-    request_uri.split('?')[1].split('&').each do |param|
+    params(request_uri).each do |param|
       key   = param.split('=')[0]
       value = param.split('=')[1]
       param_hash[key.to_sym] = value
     end
     return param_hash
+  end
+
+  def params(request_uri)
+    request_uri.split('?')[1].split('&')
   end
 
   # def create_session
