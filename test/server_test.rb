@@ -42,8 +42,11 @@ class TestServer < MiniTest::Test
   end
 
   def test_valid_file
-    path = './public/index.html'
-    assert_equal(true, @server.valid_file?(path))
+    index_path = './public/index.html'
+    game_path  = './public/game.html'
+
+    assert_equal(true, @server.valid_file?(index_path))
+    assert_equal(true, @server.valid_file?(game_path))
   end
 
   def test_200_header
