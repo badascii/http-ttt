@@ -98,6 +98,10 @@ class Server < GServer
     "Connection: close\r\n"
   end
 
+  def parse_params(line)
+    request_uri  = line.split(' ')[1]
+  end
+
   # def create_session
   #   cgi = CGI.new('html4')
 

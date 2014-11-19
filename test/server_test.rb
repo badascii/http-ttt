@@ -61,8 +61,8 @@ class TestServer < MiniTest::Test
   def test_param_regex
     expected_hash = { mode: 'cpu',
                       size: '3x3'}
-    param_path = '/game.html?mode=cpu&size=3x3'
-    params     = @server.parse_params(param_path)
+    param_request = 'GET /game.html?mode=cpu&size=3x3 HTTP/1.1'
+    params        = @server.parse_params(param_request)
 
     assert_equal(expected_hash, params)
   end
