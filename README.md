@@ -1,6 +1,6 @@
-http-server
+Tic-Tac-Toe hosted on a custom HTTP server
 ===========
 
-An HTTP server in Ruby using only raw socket and thread classes
-
-Uses Ruby 2.1
+This repo holds the custom HTTP server hosting my Ruby Tic-Tac-Toe game
+* Start with the command 'bin/start'
+* Uses Ruby 2.1
