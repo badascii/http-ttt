@@ -116,7 +116,7 @@ class Server < GServer
     return param_hash
   end
 
-  def get_post_params
+  def get_post_params(post_data)
 
   end
 
