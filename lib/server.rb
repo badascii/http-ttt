@@ -36,8 +36,7 @@ class Server < GServer
 
       if line.include?('POST')
         post_data    = client.read(517)
-        param_string = post_data.split(//).last(18).join
-
+        param_string = parse_post(post_data)
         # game   = Game.new(param_hash)
         # game.write_template
       end
@@ -105,10 +104,11 @@ class Server < GServer
   end
 
   def build_param_hash(line)
-    request_uri   = line.split(' ')[1]
-    param_hash    = {}
+    request_uri     = line.split(' ')[1]
+    array_of_params = uri_params(request_uri)
+    param_hash      = {}
 
-    params(request_uri).each do |param|
+    array_of_params.each do |param|
       key   = param.split('=')[0]
       value = param.split('=')[1]
       param_hash[key.to_sym] = value
@@ -116,11 +116,24 @@ class Server < GServer
     return param_hash
   end
 
-  def get_post_params(post_data)
-
+  def parse_post(post_data)
+    post_data.split(//).last(18).join
   end
 
-  def params(request_uri)
+  def parse_param_string(param_string)
+    param_hash = {}
+    array_of_params = param_string.split('&')
+
+    array_of_params.each do |param|
+      key   = param.split('=')[0]
+      value = param.split('=')[1]
+      param_hash[key.to_sym] = value
+    end
+
+    return param_hash
+  end
+
+  def uri_params(request_uri)
     request_uri.split('?')[1].split('&')
   end
 
