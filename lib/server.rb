@@ -43,13 +43,13 @@ class Server < GServer
       end
 
       if line.include?('game.html')
-        post_data    = client.read(505)
+        post_data    = client.read(516)
+        puts post_data
         param_string = parse_post(post_data)
         param_hash   = parse_param_string(param_string)
         game         = Game.new(param_hash)
         game.write_game_template
       end
-
 
       # if line.include?('?')
       #   params = build_param_hash(line)

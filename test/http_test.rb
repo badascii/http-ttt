@@ -26,8 +26,19 @@ class TestHTTP < MiniTest::Test
     assert_equal(response.message, 'OK')
   end
 
- def test_root_serves_index
+  def test_root_serves_index
     response = Net::HTTP.get_response(@uri)
+    assert_equal(response.code, '200')
+    assert_equal(response.message, 'OK')
+  end
+
+  def test_root_serves_implicit_index
+    response = Net::HTTP.get_response(@uri)
+    assert(response.body.include?('Tic-Tac-Toe'))
+  end
+
+  def test_root_serves_game_start
+    response = Net::HTTP.get_response(@uri + 'start.html')
     assert_equal(response.code, '200')
     assert_equal(response.message, 'OK')
   end
