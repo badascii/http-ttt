@@ -34,13 +34,22 @@ class Server < GServer
       path   = requested_file(line)
       path   = File.join(path, 'index.html') if File.directory?(path)
 
-      if line.include?('POST')
+      if line.include?('start.html')
         post_data    = client.read(517)
         param_string = parse_post(post_data)
         param_hash   = parse_param_string(param_string)
         game         = Game.new(param_hash)
-        game.write_template
+        game.write_starting_template
       end
+
+      if line.include?('game.html')
+        post_data    = client.read(505)
+        param_string = parse_post(post_data)
+        param_hash   = parse_param_string(param_string)
+        game         = Game.new(param_hash)
+        game.write_game_template
+      end
+
 
       # if line.include?('?')
       #   params = build_param_hash(line)

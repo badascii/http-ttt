@@ -39,9 +39,14 @@ class Game
     }
   end
 
-  def write_template
+  def write_starting_template
     html = ERB.new(GAME_TEMPLATE)
-    File.write('./public/game.html', html.result(get_binding))
+    File.write('./public/start.html', html.result(get_binding))
+  end
+
+  def write_game_template
+    html = ERB.new(GAME_TEMPLATE)
+    File.write('./public/.html', html.result(get_binding))
   end
 
   private
