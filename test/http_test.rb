@@ -15,25 +15,17 @@ class TestHTTP < MiniTest::Test
     assert_equal(@uri.host, 'localhost')
   end
 
-  def test_hello_world
-    response = Net::HTTP.get_response(@uri + 'index.html')
-    assert(response.body.include?('Tic-Tac-Toe'))
-  end
-
   def test_index
     response = Net::HTTP.get_response(@uri + 'index.html')
     assert_equal(response.code, '200')
     assert_equal(response.message, 'OK')
+    assert(response.body.include?('Tic-Tac-Toe'))
   end
 
   def test_root_serves_index
     response = Net::HTTP.get_response(@uri)
     assert_equal(response.code, '200')
     assert_equal(response.message, 'OK')
-  end
-
-  def test_root_serves_implicit_index
-    response = Net::HTTP.get_response(@uri)
     assert(response.body.include?('Tic-Tac-Toe'))
   end
 
@@ -41,6 +33,7 @@ class TestHTTP < MiniTest::Test
     response = Net::HTTP.get_response(@uri + 'start.html')
     assert_equal(response.code, '200')
     assert_equal(response.message, 'OK')
+    assert(response.body.include?('Welcome to the Fields of Strife'))
   end
 
   def test_file_outside_public

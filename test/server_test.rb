@@ -58,31 +58,42 @@ class TestServer < MiniTest::Test
     assert_equal(true, @server.valid_file?(game_path))
   end
 
-  def test_parse_param_string
+  def test_parse_starting_param_string
     expected_hash = { mode: 'cpu',
                       size: '3x3'}
     param_string  = 'mode=cpu&size=3x3'
-    param_hash    = @server.parse_param_string(param_string)
+    param_hash    = @server.parse_starting_param_string(param_string)
 
     assert_equal(expected_hash, param_hash)
   end
 
-  def test_param_regex
-    expected_hash = { mode: 'cpu',
-                      size: '3x3'}
-    param_request = 'GET /game.html?mode=cpu&size=3x3 HTTP/1.1'
-    params        = @server.build_param_hash(param_request)
-
-    assert_equal(expected_hash, params)
-  end
-
-  def test_get_post_params
-    expected_hash = { mode: 'cpu',
-                      size: '3x3'}
-    post_data  = 'BIG STRING'
-    param_hash = @server.get_post_params(post_data)
+  def test_parse_move_param_string
+    expected_hash = { grid_position: 'a1'}
+    param_string  = 'grid_position=a1'
+    param_hash    = @server.parse_move_param_string(param_string)
 
     assert_equal(expected_hash, param_hash)
+  end
+
+  def test_parse_starting_post
+    expected_string = 'mode=cpu&size=3x3'
+    post_data = 'POST /start.html HTTP/1.1
+                 Host: localhost:2000
+                 Connection: keep-alive
+                 Content-Length: 17
+                 Cache-Control: max-age=0
+                 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+                 Origin: http://localhost:2000
+                 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36
+                 Content-Type: application/x-www-form-urlencoded
+                 Referer: http://localhost:2000/index.html
+                 Accept-Encoding: gzip, deflate
+                 Accept-Language: en-US,en;q=0.8
+
+                 mode=cpu&size=3x3'
+    param_string = @server.parse_starting_post(post_data)
+
+    assert_equal(expected_string, param_string)
   end
 
   def test_200_header

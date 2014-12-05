@@ -36,18 +36,18 @@ class Server < GServer
 
       if line.include?('start.html')
         post_data    = client.read(517)
-        param_string = parse_post(post_data)
-        param_hash   = parse_param_string(param_string)
+        param_string = parse_starting_post(post_data)
+        param_hash   = parse_starting_param_string(param_string)
         game         = Game.new(param_hash)
         game.write_starting_template
       end
 
       if line.include?('game.html')
         post_data    = client.read(516)
-        puts post_data
-        param_string = parse_post(post_data)
-        param_hash   = parse_param_string(param_string)
+        param_string = parse_move_post(post_data)
+        param_hash   = parse_move_param_string(param_string)
         game         = Game.new(param_hash)
+        game.round(param_hash['grid_position'])
         game.write_game_template
       end
 
@@ -126,11 +126,15 @@ class Server < GServer
     return param_hash
   end
 
-  def parse_post(post_data)
-    post_data.split(//).last(18).join
+  def parse_starting_post(post_data)
+    post_data.split(//).last(17).join
   end
 
-  def parse_param_string(param_string)
+  def parse_move_post(post_data)
+    post_data.split(//).last(16).join
+  end
+
+  def parse_starting_param_string(param_string)
     param_hash = {}
     array_of_params = param_string.split('&')
 
@@ -143,8 +147,9 @@ class Server < GServer
     return param_hash
   end
 
-  def uri_params(request_uri)
-    request_uri.split('?')[1].split('&')
+  def parse_move_param_string(param_string)
+    grid_position = param_string.split('=')[1]
+    param_hash = { grid_position: grid_position}
   end
 
   # def create_session
