@@ -35,27 +35,10 @@ class Server < GServer
       path   = File.join(path, 'index.html') if File.directory?(path)
 
       if line.include?('start.html')
-        post_data    = client.read(517)
-        param_string = parse_starting_post(post_data)
-        param_hash   = parse_starting_param_string(param_string)
-        game         = Game.new(param_hash)
-        game.write_starting_template
+        build_start_page(client)
+      elsif line.include?('game.html')
+        build_game_page(client)
       end
-
-      if line.include?('game.html')
-        post_data    = client.read(516)
-        param_string = parse_move_post(post_data)
-        param_hash   = parse_move_param_string(param_string)
-        game         = Game.new(param_hash)
-        game.round(param_hash['grid_position'])
-        game.write_game_template
-      end
-
-      # if line.include?('?')
-      #   params = build_param_hash(line)
-      #   game   = Game.new(params)
-      #   game.write_template
-      # end
 
       puts "Got request for: #{path}"
       send_response(path, client)
@@ -98,8 +81,7 @@ class Server < GServer
 
   def file_not_found(client)
     message = "File not found\n"
-
-    header = build_header(404, 'text/plain', message.size)
+    header  = build_header(404, 'text/plain', message.size)
 
     client.print(header)
     client.print("\r\n")
@@ -111,6 +93,25 @@ class Server < GServer
     "Content-Type: #{type}\r\n" +
     "Content-Length: #{length}\r\n" +
     "Connection: close\r\n"
+  end
+
+  def build_start_page(client)
+    post_data    = client.read(517)
+    param_string = parse_starting_post(post_data)
+    param_hash   = parse_starting_param_string(param_string)
+    game         = Game.new(param_hash)
+
+    game.write_starting_template
+  end
+
+  def build_game_page(client)
+    post_data    = client.read(514)
+    param_string = parse_move_post(post_data)
+    param_hash   = parse_move_param_string(param_string)
+    game         = Game.new(param_hash)
+
+    game.round(param_hash['grid_position'])
+    game.write_game_template
   end
 
   def build_param_hash(line)
@@ -135,7 +136,7 @@ class Server < GServer
   end
 
   def parse_starting_param_string(param_string)
-    param_hash = {}
+    param_hash      = {}
     array_of_params = param_string.split('&')
 
     array_of_params.each do |param|
@@ -149,7 +150,9 @@ class Server < GServer
 
   def parse_move_param_string(param_string)
     grid_position = param_string.split('=')[1]
-    param_hash = { grid_position: grid_position}
+    param_hash    = { grid_position: grid_position }
+
+    return param_hash
   end
 
   # def create_session
