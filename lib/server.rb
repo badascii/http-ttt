@@ -1,9 +1,6 @@
 require 'socket'
 require 'uri'
 require 'gserver'
-require 'erb'
-require 'cgi'
-require 'cgi/session'
 require_relative 'game'
 
 class Server < GServer
@@ -28,12 +25,6 @@ class Server < GServer
 
   def serve(client)
     loop do
-      # cgi     = CGI.new
-      # session = CGI::Session.new(cgi)
-      # id      = session.session_id
-
-      # puts client.inspect
-
       line = client.readline
       path = requested_file(line)
       path = File.join(path, 'index.html') if File.directory?(path)
@@ -105,13 +96,13 @@ class Server < GServer
       line = client.readline
       puts "'#{line =~ /^\R$/}'"
     end
-
+    puts path
     content_length = header_hash['Content-Length'].to_i
     post_data      = client.read(content_length)
 
-    if path == 'start.html'
+    if path == './public/start.html'
       build_new_game(post_data)
-    elsif path == 'game.html'
+    elsif path == './public/game.html'
       build_existing_game(post_data)
     end
   end
@@ -172,41 +163,5 @@ class Server < GServer
   def self.clear_games
     @@hash_of_games = {}
   end
-
-  # def create_session
-  #   cgi = CGI.new('html4')
-
-  #   begin
-  #     session = CGI::Session.new(cgi, 'new_session' => false)
-  #     session.delete
-  #   rescue ArgumentError  # if no old session
-  #   end
-
-  #   session = CGI::Session.new(cgi, 'new_session' => true)
-  #   session.close
-  # end
-
-  # def build_session
-  #   cgi = CGI.new('html4')
-  #   session = CGI::Session.new(cgi)
-
-  #   session['game'] = @game
-  # end
-
-  # def set_session_id(cgi, session)
-  #   if cgi.has_key?('id') and cgi['id'] != ''
-  #     session = cgi['user_name'].to_s
-  #   elsif !session['id']
-  #     session['id'] = @games.length + 1
-  #   end
-  # end
-
-  # def find_game(id)
-  #   if @games.has_key?(id)
-  #     @games[id]
-  #   else
-  #     @games[id] = Game.new(session)
-  #   end
-  # end
 
 end

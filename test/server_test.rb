@@ -63,7 +63,7 @@ class TestServer < MiniTest::Test
     expected_hash = { mode: 'cpu',
                       size: '3x3'}
     param_string  = 'mode=cpu&size=3x3'
-    param_hash    = @server.parse_starting_param_string(param_string)
+    param_hash    = @server.parse_param_string(param_string)
 
     assert_equal(expected_hash, param_hash)
   end
@@ -71,7 +71,7 @@ class TestServer < MiniTest::Test
   def test_parse_move_param_string
     expected_hash = { grid_position: 'a1'}
     param_string  = 'grid_position=a1'
-    param_hash    = @server.parse_move_param_string(param_string)
+    param_hash    = @server.parse_param_string(param_string)
 
     assert_equal(expected_hash, param_hash)
   end
