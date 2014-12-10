@@ -20,7 +20,7 @@ class Server < GServer
   STATUS_MESSAGES = {200 => 'OK',
                      404 => 'Not Found'}
 
-  hash_of_games = {}
+  @@hash_of_games = {}
 
   def initialize(port=2000, *args)
     super(port, *args)
@@ -159,6 +159,10 @@ class Server < GServer
     param_hash    = { grid_position: grid_position }
 
     return param_hash
+  end
+
+  def self.hash_of_games
+    @@hash_of_games
   end
 
   # def create_session

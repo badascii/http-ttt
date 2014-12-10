@@ -137,7 +137,7 @@ class TestServer < MiniTest::Test
     options       = { mode: 'cpu', size: '3x3', id: 1 }
     expected_game = Game.new(options)
 
-    Server.hash_of_games[game.id] = game
+    Server.hash_of_games[expected_game.id] = expected_game
 
     retrieved_game = Server.retrieve_game(1)
 
