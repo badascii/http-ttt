@@ -21,7 +21,7 @@ class Game4x4
   POSITION_REGEX         = /[abcd][1-4]/i
   POSITION_REGEX_REVERSE = /[1-4][abcd]/i
 
-  attr_accessor :grid, :player_1, :player_2, :cpu, :mode, :size, :turn, :message, :result
+  attr_accessor :grid, :player_1, :player_2, :cpu, :mode, :size, :turn, :message, :result, :id
 
   def initialize(opts)
     @player_1    = 'X'
@@ -33,6 +33,7 @@ class Game4x4
     @turn        = opts[:turn] || @player_1
     @message     = opts[:message]
     @result      = nil
+    @id          = opts[:id] || '1'
   end
 
  def round(position)

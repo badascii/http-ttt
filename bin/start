@@ -1,11 +1,15 @@
 #!/usr/bin/env ruby
 require_relative '../lib/server'
 
+Server.clear_games
+
 port = ARGV[0] || 2000
 
 host = ARGV[1] || 'localhost'
 
 server = Server.new(port, host)
+
+server.audit = true
 
 puts "Starting server on port #{port} on #{host}..."
 

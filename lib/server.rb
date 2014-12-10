@@ -32,15 +32,13 @@ class Server < GServer
       # session = CGI::Session.new(cgi)
       # id      = session.session_id
 
-      line   = client.readline
-      path   = requested_file(line)
-      path   = File.join(path, 'index.html') if File.directory?(path)
+      # puts client.inspect
 
-      if line.include?('start.html')
-        build_start_page(client)
-      elsif line.include?('game.html')
-        build_game_page(client)
-      end
+      line = client.readline
+      path = requested_file(line)
+      path = File.join(path, 'index.html') if File.directory?(path)
+
+      build_page(path, client)
 
       puts "Got request for: #{path}"
       send_response(path, client)
@@ -97,8 +95,28 @@ class Server < GServer
     "Connection: close\r\n"
   end
 
-  def build_start_page(client)
-    post_data    = client.read(517)
+  def build_page(path, client)
+    line        = client.readline
+    header_hash = {}
+
+    until line =~ /^\R$/
+      header_array = line.split(':')
+      header_hash[header_array[0]] = header_array[1]
+      line = client.readline
+      puts "'#{line =~ /^\R$/}'"
+    end
+
+    content_length = header_hash['Content-Length'].to_i
+    post_data      = client.read(content_length)
+
+    if path == 'start.html'
+      build_new_game(post_data)
+    elsif path == 'game.html'
+      build_existing_game(post_data)
+    end
+  end
+
+  def build_new_game(post_data)
     param_string = parse_starting_post(post_data)
     param_hash   = parse_param_string(param_string)
     game         = Game.new(param_hash)
@@ -107,14 +125,12 @@ class Server < GServer
     store_game(game)
   end
 
-  def build_game_page(client)
-    post_data    = client.read(521)
+  def build_existing_game(post_data)
     param_string = parse_move_post(post_data)
     param_hash   = parse_param_string(param_string)
-    puts param_hash
     game         = retrieve_game(param_hash[:id])
 
-    # game.round(param_hash['grid_position'])
+    game.round(param_hash[:grid_position])
     game.write_game_template
 
     store_game(game)
@@ -151,6 +167,10 @@ class Server < GServer
 
   def retrieve_game(game_id)
     @@hash_of_games[game_id]
+  end
+
+  def self.clear_games
+    @@hash_of_games = {}
   end
 
   # def create_session
