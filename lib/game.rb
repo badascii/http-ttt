@@ -3,7 +3,7 @@ require_relative 'game_4x4.rb'
 
 class Game
 
-  attr_accessor :grid, :player_1, :player_2, :cpu, :mode, :size, :turn, :message, :result
+  attr_accessor :grid, :player_1, :player_2, :cpu, :mode, :size, :turn, :message, :result, :id
 
   def initialize(opts)
     @size     = opts[:size]

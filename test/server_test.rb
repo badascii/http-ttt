@@ -127,7 +127,7 @@ class TestServer < MiniTest::Test
 
     @server.store_game(expected_game)
 
-    stored_game   = Server.hash_of_games[game.id]
+    stored_game   = Server.hash_of_games[expected_game.id]
 
     assert_equal(stored_game, expected_game)
   end
