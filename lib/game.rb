@@ -15,6 +15,7 @@ class Game
     @cpu      = 'O'
     @result   = nil
     @message  = opts[:message] || 'Welcome to the Fields of Strife'
+    @id       = opts[:id] || 1
   end
 
   def round(position)
@@ -26,26 +27,28 @@ class Game
     @turn    = game.turn
     @message = game.message
     @result  = game.result
+    @id      = game.id
   end
 
   def session_hash
     {
-      size: @size,
-      mode: @mode,
-      turn: @turn,
+      size:    @size,
+      mode:    @mode,
+      turn:    @turn,
       message: @message,
-      result: @result,
-      grid: @grid
+      result:  @result,
+      grid:    @grid,
+      id:      @id
     }
   end
 
   def write_starting_template
-    html = ERB.new(GAME_TEMPLATE)
+    html = ERB.new(@@game_template)
     File.write('./public/start.html', html.result(get_binding))
   end
 
   def write_game_template
-    html = ERB.new(GAME_TEMPLATE)
+    html = ERB.new(@@game_template)
     File.write('./public/game.html', html.result(get_binding))
   end
 
@@ -71,7 +74,7 @@ class Game
     binding
   end
 
-  GAME_TEMPLATE = %q{
+  @@game_template = %q{
      <html>
        <body>
          <h1>Tic-Tac-Toe</h1>
@@ -140,6 +143,7 @@ class Game
            <form method='post' action='/game.html'>
              <label for='grid_position'>Grid position:</label>
              <input type='text' name='grid_position' id='grid_position' autofocus />
+             <input type='hidden' name='id' value="<%= @id %>"
              <input type='submit' value='Submit' />
            </form>
          <% end %>

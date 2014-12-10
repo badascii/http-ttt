@@ -104,20 +104,19 @@ class Server < GServer
     game         = Game.new(param_hash)
 
     game.write_starting_template
-
-    hash_of_games[game.id] = game
+    store_game(game)
   end
 
   def build_game_page(client)
     post_data    = client.read(514)
     param_string = parse_move_post(post_data)
     param_hash   = parse_move_param_string(param_string)
-    game         = Game.new(param_hash)
+    game         = retrieve_game(param_hash[:id])
 
     game.round(param_hash['grid_position'])
     game.write_game_template
 
-    hash_of_games[game.id] = game
+    store_game(game)
   end
 
   def build_param_hash(line)
@@ -163,6 +162,14 @@ class Server < GServer
 
   def self.hash_of_games
     @@hash_of_games
+  end
+
+  def store_game(game)
+    Server.hash_of_games[game.id] = game
+  end
+
+  def retrieve_game(game_id)
+    Server.hash_of_games[game_id]
   end
 
   # def create_session

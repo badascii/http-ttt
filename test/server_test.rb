@@ -125,7 +125,7 @@ class TestServer < MiniTest::Test
     options       = { mode: 'cpu', size: '3x3', id: 1 }
     expected_game = Game.new(options)
 
-    Server.store_game(expected_game)
+    @server.store_game(expected_game)
 
     stored_game   = Server.hash_of_games[game.id]
 
@@ -139,7 +139,7 @@ class TestServer < MiniTest::Test
 
     Server.hash_of_games[expected_game.id] = expected_game
 
-    retrieved_game = Server.retrieve_game(1)
+    retrieved_game = @server.retrieve_game(1)
 
     assert_equal(retrieved_game, expected_game)
   end
