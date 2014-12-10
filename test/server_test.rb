@@ -2,6 +2,7 @@ require 'minitest/autorun'
 require 'minitest/spec'
 require 'net/http'
 require_relative '../lib/server'
+require_relative '../lib/game'
 
 class TestServer < MiniTest::Test
 
@@ -118,6 +119,29 @@ class TestServer < MiniTest::Test
                          "Content-Type: text/plain\r\n" +
                          "Content-Length: 10\r\n" +
                          "Connection: close\r\n")
+  end
+
+  def test_store_game
+    options       = { mode: 'cpu', size: '3x3', id: 1 }
+    expected_game = Game.new(options)
+
+    Server.store_game(expected_game)
+
+    stored_game   = Server.hash_of_games[game.id]
+
+    assert_equal(stored_game, expected_game)
+  end
+
+
+  def test_retrieve_game
+    options       = { mode: 'cpu', size: '3x3', id: 1 }
+    expected_game = Game.new(options)
+
+    Server.hash_of_games[game.id] = game
+
+    retrieved_game = Server.retrieve_game(1)
+
+    assert_equal(retrieved_game, expected_game)
   end
 
 end

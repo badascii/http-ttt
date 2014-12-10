@@ -20,6 +20,8 @@ class Server < GServer
   STATUS_MESSAGES = {200 => 'OK',
                      404 => 'Not Found'}
 
+  hash_of_games = {}
+
   def initialize(port=2000, *args)
     super(port, *args)
   end
@@ -102,6 +104,8 @@ class Server < GServer
     game         = Game.new(param_hash)
 
     game.write_starting_template
+
+    hash_of_games[game.id] = game
   end
 
   def build_game_page(client)
@@ -112,6 +116,8 @@ class Server < GServer
 
     game.round(param_hash['grid_position'])
     game.write_game_template
+
+    hash_of_games[game.id] = game
   end
 
   def build_param_hash(line)
