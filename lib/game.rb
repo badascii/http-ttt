@@ -15,7 +15,7 @@ class Game
     @cpu      = 'O'
     @result   = nil
     @message  = opts[:message] || 'Welcome to the Fields of Strife'
-    @id       = opts[:id] || 1
+    @id       = opts[:id] || '1'
   end
 
   def round(position)
@@ -143,7 +143,7 @@ class Game
            <form method='post' action='/game.html'>
              <label for='grid_position'>Grid position:</label>
              <input type='text' name='grid_position' id='grid_position' autofocus />
-             <input type='hidden' name='id' value="<%= @id %>"
+             <input type='hidden' name='id' value='<%= @id %>'
              <input type='submit' value='Submit' />
            </form>
          <% end %>

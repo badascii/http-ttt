@@ -100,7 +100,7 @@ class Server < GServer
   def build_start_page(client)
     post_data    = client.read(517)
     param_string = parse_starting_post(post_data)
-    param_hash   = parse_starting_param_string(param_string)
+    param_hash   = parse_param_string(param_string)
     game         = Game.new(param_hash)
 
     game.write_starting_template
@@ -108,28 +108,16 @@ class Server < GServer
   end
 
   def build_game_page(client)
-    post_data    = client.read(514)
+    post_data    = client.read(521)
     param_string = parse_move_post(post_data)
-    param_hash   = parse_move_param_string(param_string)
+    param_hash   = parse_param_string(param_string)
+    puts param_hash
     game         = retrieve_game(param_hash[:id])
 
-    game.round(param_hash['grid_position'])
+    # game.round(param_hash['grid_position'])
     game.write_game_template
 
     store_game(game)
-  end
-
-  def build_param_hash(line)
-    request_uri     = line.split(' ')[1]
-    param_hash      = {}
-    array_of_params = uri_params(request_uri)
-
-    array_of_params.each do |param|
-      key   = param.split('=')[0]
-      value = param.split('=')[1]
-      param_hash[key.to_sym] = value
-    end
-    return param_hash
   end
 
   def parse_starting_post(post_data)
@@ -137,10 +125,10 @@ class Server < GServer
   end
 
   def parse_move_post(post_data)
-    post_data.split(//).last(16).join
+    post_data.split(//).last(21).join
   end
 
-  def parse_starting_param_string(param_string)
+  def parse_param_string(param_string)
     param_hash      = {}
     array_of_params = param_string.split('&')
 
@@ -153,23 +141,16 @@ class Server < GServer
     return param_hash
   end
 
-  def parse_move_param_string(param_string)
-    grid_position = param_string.split('=')[1]
-    param_hash    = { grid_position: grid_position }
-
-    return param_hash
-  end
-
   def self.hash_of_games
     @@hash_of_games
   end
 
   def store_game(game)
-    Server.hash_of_games[game.id] = game
+    @@hash_of_games[game.id] = game
   end
 
   def retrieve_game(game_id)
-    Server.hash_of_games[game_id]
+    @@hash_of_games[game_id]
   end
 
   # def create_session
