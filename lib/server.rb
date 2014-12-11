@@ -1,6 +1,7 @@
 require 'socket'
 require 'uri'
 require 'gserver'
+require 'erb'
 require_relative 'game'
 
 class Server < GServer
@@ -28,9 +29,14 @@ class Server < GServer
       line      = client.readline
       path      = requested_file(line)
       path      = File.join(path, 'index.html') if File.directory?(path)
-      post_data = fetch_post_data(path, client)
 
-      build_page(path, post_data)
+      puts line
+
+      if line.include?('POST')
+        post_data = fetch_post_data(path, client)
+        build_page(path, post_data)
+      end
+
       puts "Got request for: #{path}"
       send_response(path, client)
     end
@@ -94,7 +100,6 @@ class Server < GServer
       header_array = line.split(':')
       header_hash[header_array[0]] = header_array[1]
       line = client.readline
-      puts "'#{line =~ /^\R$/}'"
     end
 
     content_length = header_hash['Content-Length'].to_i
@@ -112,30 +117,19 @@ class Server < GServer
   end
 
   def build_new_game(post_data)
-    param_string = parse_starting_post(post_data)
-    param_hash   = parse_param_string(param_string)
+    param_hash   = parse_param_string(post_data)
     game         = Game.new(param_hash)
-
     game.write_starting_template
     store_game(game)
   end
 
   def build_existing_game(post_data)
-    param_string = parse_move_post(post_data)
-    param_hash   = parse_param_string(param_string)
+    param_hash   = parse_param_string(post_data)
     game         = retrieve_game(param_hash[:id])
-
+    puts param_hash[:grid_position]
     game.round(param_hash[:grid_position])
     game.write_game_template
     store_game(game)
-  end
-
-  def parse_starting_post(post_data)
-    post_data.split(//).last(17).join
-  end
-
-  def parse_move_post(post_data)
-    post_data.split(//).last(21).join
   end
 
   def parse_param_string(param_string)

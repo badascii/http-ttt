@@ -76,27 +76,7 @@ class TestServer < MiniTest::Test
     assert_equal(expected_hash, param_hash)
   end
 
-  def test_parse_starting_post
-    expected_string = 'mode=cpu&size=3x3'
-    post_data = 'POST /start.html HTTP/1.1
-                 Host: localhost:2000
-                 Connection: keep-alive
-                 Content-Length: 17
-                 Cache-Control: max-age=0
-                 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-                 Origin: http://localhost:2000
-                 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36
-                 Content-Type: application/x-www-form-urlencoded
-                 Referer: http://localhost:2000/index.html
-                 Accept-Encoding: gzip, deflate
-                 Accept-Language: en-US,en;q=0.8
-
-                 mode=cpu&size=3x3'
-    param_string = @server.parse_starting_post(post_data)
-
-    assert_equal(expected_string, param_string)
-  end
-
+  #
   def test_200_header
     code   = 200
     type   = Server::DEFAULT_CONTENT_TYPE
@@ -143,8 +123,33 @@ class TestServer < MiniTest::Test
     assert_equal(retrieved_game, expected_game)
   end
 
-  def test_build_requested_page
+  def test_build_3x3_template
 
   end
+
+  def test_build_4x4_template
+
+  end
+
+  # def test_parse_starting_post
+  #   expected_string = 'mode=cpu&size=3x3'
+  #   post_data = 'POST /start.html HTTP/1.1
+  #                Host: localhost:2000
+  #                Connection: keep-alive
+  #                Content-Length: 17
+  #                Cache-Control: max-age=0
+  #                Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+  #                Origin: http://localhost:2000
+  #                User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36
+  #                Content-Type: application/x-www-form-urlencoded
+  #                Referer: http://localhost:2000/index.html
+  #                Accept-Encoding: gzip, deflate
+  #                Accept-Language: en-US,en;q=0.8
+
+  #                mode=cpu&size=3x3'
+  #   param_string = @server.parse_starting_post(post_data)
+
+  #   assert_equal(expected_string, param_string)
+  # end
 
 end
