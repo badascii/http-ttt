@@ -25,12 +25,12 @@ class Server < GServer
 
   def serve(client)
     loop do
-      line = client.readline
-      path = requested_file(line)
-      path = File.join(path, 'index.html') if File.directory?(path)
+      line      = client.readline
+      path      = requested_file(line)
+      path      = File.join(path, 'index.html') if File.directory?(path)
+      post_data = fetch_post_data(path, client)
 
-      build_page(path, client)
-
+      build_page(path, post_data)
       puts "Got request for: #{path}"
       send_response(path, client)
     end
@@ -86,7 +86,7 @@ class Server < GServer
     "Connection: close\r\n"
   end
 
-  def build_page(path, client)
+  def fetch_post_data(path, client)
     line        = client.readline
     header_hash = {}
 
@@ -96,10 +96,14 @@ class Server < GServer
       line = client.readline
       puts "'#{line =~ /^\R$/}'"
     end
-    puts path
+
     content_length = header_hash['Content-Length'].to_i
     post_data      = client.read(content_length)
 
+    return post_data
+  end
+
+  def build_page(path, post_data)
     if path == './public/start.html'
       build_new_game(post_data)
     elsif path == './public/game.html'
@@ -123,7 +127,6 @@ class Server < GServer
 
     game.round(param_hash[:grid_position])
     game.write_game_template
-
     store_game(game)
   end
 

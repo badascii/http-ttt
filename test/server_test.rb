@@ -132,7 +132,6 @@ class TestServer < MiniTest::Test
     assert_equal(stored_game, expected_game)
   end
 
-
   def test_retrieve_game
     options       = { mode: 'cpu', size: '3x3', id: 1 }
     expected_game = Game.new(options)
@@ -142,6 +141,10 @@ class TestServer < MiniTest::Test
     retrieved_game = @server.retrieve_game(1)
 
     assert_equal(retrieved_game, expected_game)
+  end
+
+  def test_build_requested_page
+
   end
 
 end
