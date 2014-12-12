@@ -16,7 +16,7 @@ class TestGame < MiniTest::Test
     assert_equal(expected_view, game.build_template)
   end
 
-  def test_write_4x4_template
+  def test_build_4x4_template
     opts          = { size: '4x4',
                       mode: 'cpu'
                     }
