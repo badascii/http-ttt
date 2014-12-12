@@ -3,8 +3,6 @@ require_relative 'game_4x4.rb'
 
 class Game
 
-  @@game_template = File.read('./lib/template.erb')
-
   attr_accessor :grid, :player_1, :player_2, :cpu, :mode, :size, :turn, :message, :result, :id
 
   def initialize(opts)
@@ -44,16 +42,17 @@ class Game
     }
   end
 
-  def write_starting_template
-    html = ERB.new(@@game_template)
-    # return html.result(get_binding)
-    File.write('./public/start.html', html.result(get_binding))
+  def build_template
+    erb      = File.read('./lib/template.erb')
+    template = ERB.new(erb)
+    html     = template.result(get_binding)
+
+    return html
   end
 
-  def write_game_template
-    html = ERB.new(@@game_template)
-    # return html.result(get_binding)
-    File.write('./public/game.html', html.result(get_binding))
+  def write_template(path)
+    html = build_template
+    File.write(path, html)
   end
 
   private

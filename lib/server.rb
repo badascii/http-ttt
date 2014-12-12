@@ -110,25 +110,26 @@ class Server < GServer
 
   def build_page(path, post_data)
     if path == './public/start.html'
-      build_new_game(post_data)
+      build_new_game(path, post_data)
     elsif path == './public/game.html'
-      build_existing_game(post_data)
+      build_existing_game(path, post_data)
     end
   end
 
-  def build_new_game(post_data)
-    param_hash   = parse_param_string(post_data)
-    game         = Game.new(param_hash)
-    game.write_starting_template
+  def build_new_game(path, post_data)
+    param_hash = parse_param_string(post_data)
+    game       = Game.new(param_hash)
+
+    game.write_template(path)
     store_game(game)
   end
 
-  def build_existing_game(post_data)
-    param_hash   = parse_param_string(post_data)
-    game         = retrieve_game(param_hash[:id])
-    puts param_hash[:grid_position]
+  def build_existing_game(path, post_data)
+    param_hash = parse_param_string(post_data)
+    game       = retrieve_game(param_hash[:id])
+
     game.round(param_hash[:grid_position])
-    game.write_game_template
+    game.write_template(path)
     store_game(game)
   end
 
