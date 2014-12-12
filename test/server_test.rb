@@ -123,14 +123,6 @@ class TestServer < MiniTest::Test
     assert_equal(retrieved_game, expected_game)
   end
 
-  def test_build_3x3_template
-
-  end
-
-  def test_build_4x4_template
-
-  end
-
   # def test_parse_starting_post
   #   expected_string = 'mode=cpu&size=3x3'
   #   post_data = 'POST /start.html HTTP/1.1
