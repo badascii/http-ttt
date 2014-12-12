@@ -39,7 +39,6 @@ class Game4x4
   def round(position)
     if @mode == 'human'
       get_player_input(position)
-      switch_turns
       human_results
     elsif @mode == 'cpu'
       get_player_input(position)
@@ -83,6 +82,8 @@ class Game4x4
       @message = 'Movement accepted.'
       if @mode == 'cpu'
         cpu_turn
+      else
+        switch_turns
       end
     elsif valid_position_format?(position)
       @message = 'Invalid input. That position is taken.'
