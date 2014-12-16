@@ -226,18 +226,18 @@ class TestGame < MiniTest::Test
     assert(@game.side_defense_3x3?)
   end
 
-  def test_cpu_opposite_corners_3x3_1
-    assert(!@game.opposite_corners_3x3?)
+  def test_cpu_opposite_corners_1
+    assert(!@game.opposite_corners?)
     @game.grid['a1'] = @game.player_1
     @game.grid['c3'] = @game.player_1
-    assert(@game.opposite_corners_3x3?)
+    assert(@game.opposite_corners?)
   end
 
-  def test_cpu_opposite_corners_3x3_2
-    assert(!@game.opposite_corners_3x3?)
+  def test_cpu_opposite_corners_2
+    assert(!@game.opposite_corners?)
     @game.grid['a3'] = @game.player_1
     @game.grid['c1'] = @game.player_1
-    assert(@game.opposite_corners_3x3?)
+    assert(@game.opposite_corners?)
   end
 
 end

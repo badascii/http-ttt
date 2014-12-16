@@ -182,7 +182,7 @@ class Game
       place_corner_defense
     elsif (side_defense_3x3? || side_defense_4x4?)
       place_side_defense
-    elsif (opposite_corners_3x3? || opposite_corners_4x4?)
+    elsif (opposite_corners? && @size == '3x3')
       @grid['a2'] = @cpu
     else
       optimal_move
@@ -299,14 +299,9 @@ class Game
     (@grid['b2'] == @cpu) && (corner_positions.uniq.count == 2) && (side_positions.uniq.count == 3)
   end
 
-  def opposite_corners_3x3?
+  def opposite_corners?
     (@grid['a1'] == @player_1 && @grid['c3'] == @player_1) ||
     (@grid['a3'] == @player_1 && @grid['c1'] == @player_1)
-  end
-
-  def opposite_corners_4x4?
-    (@grid['a1'] == @player_1 && @grid['c4'] == @player_1) ||
-    (@grid['a4'] == @player_1 && @grid['c1'] == @player_1)
   end
 
   def write_template(path)
