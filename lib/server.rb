@@ -117,7 +117,7 @@ class Server < GServer
 
   def build_new_game(path, post_data)
     param_hash      = parse_param_string(post_data)
-    param_hash[:id] = new_game_id
+    param_hash[:id] = new_game_id.to_s
     game            = Game.new(param_hash)
 
     game.write_template(path)

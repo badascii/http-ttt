@@ -274,8 +274,8 @@ class Game
   end
 
   def find_empty_position
-    @grid.each do |key, value|
-      if value == ' '
+    @grid.keys.reverse.each do |key|
+      if @grid[key] == ' '
         @grid[key] = @cpu
         break
       end
