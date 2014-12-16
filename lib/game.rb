@@ -52,7 +52,7 @@ class Game
     @grid     = get_grid
     @result   = nil
     @message  = opts[:message] || 'Welcome to the Fields of Strife'
-    @id       = opts[:id] || '1' #TODO: pass in incremental IDs when created
+    @id       = opts[:id] || '1'
   end
 
   def round(position)

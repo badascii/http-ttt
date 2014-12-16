@@ -116,11 +116,26 @@ class Server < GServer
   end
 
   def build_new_game(path, post_data)
-    param_hash = parse_param_string(post_data)
-    game       = Game.new(param_hash)
+    param_hash      = parse_param_string(post_data)
+    param_hash[:id] = new_game_id
+    game            = Game.new(param_hash)
 
     game.write_template(path)
     store_game(game)
+  end
+
+  def new_game_id
+    if @@hash_of_games.empty?
+      return '1'
+    else
+      ids = []
+
+      @@hash_of_games.keys.each do |key|
+        ids << key.to_i
+      end
+
+      return ids.max + 1
+    end
   end
 
   def build_existing_game(path, post_data)
@@ -153,8 +168,8 @@ class Server < GServer
     @@hash_of_games[game.id] = game
   end
 
-  def retrieve_game(game_id)
-    @@hash_of_games[game_id]
+  def retrieve_game(id)
+    @@hash_of_games[id]
   end
 
   def self.clear_games

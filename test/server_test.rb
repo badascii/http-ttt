@@ -101,9 +101,18 @@ class TestServer < MiniTest::Test
                          "Connection: close\r\n")
   end
 
+  def test_new_game_id
+    opts = { mode: 'cpu', size: '3x3', id: 1 }
+    game = Game.new(opts)
+
+    @server.store_game(game)
+
+    assert_equal(2, @server.new_game_id)
+  end
+
   def test_store_game
-    options       = { mode: 'cpu', size: '3x3', id: 1 }
-    expected_game = Game.new(options)
+    opts          = { mode: 'cpu', size: '3x3', id: 1 }
+    expected_game = Game.new(opts)
 
     @server.store_game(expected_game)
 
@@ -113,8 +122,8 @@ class TestServer < MiniTest::Test
   end
 
   def test_retrieve_game
-    options       = { mode: 'cpu', size: '3x3', id: 1 }
-    expected_game = Game.new(options)
+    opts          = { mode: 'cpu', size: '3x3', id: 1 }
+    expected_game = Game.new(opts)
 
     Server.hash_of_games[expected_game.id] = expected_game
 
