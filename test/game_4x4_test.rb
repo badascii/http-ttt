@@ -145,7 +145,7 @@ class TestGame < MiniTest::Test
     assert(@game.four_in_a_row?(@player_1))
   end
 
-  def test_four_in_a_row_cpu
+  def test_cpu_four_in_a_row_1
     assert(!@game.four_in_a_row?(@cpu))
 
     @game.grid['a1'] = @cpu
@@ -154,26 +154,84 @@ class TestGame < MiniTest::Test
     @game.grid['a4'] = @cpu
 
     assert(@game.four_in_a_row?(@cpu))
-  #   @game.grid['b1'] = @cpu
-  #   @game.grid['b2'] = @cpu
-  #   @game.grid['b3'] = @cpu
-  #   assert(@game.four_in_a_row?(@cpu, ['b1', 'b2', 'b3']))
-  #   @game.grid['c1'] = @cpu
-  #   @game.grid['c2'] = @cpu
-  #   @game.grid['c3'] = @cpu
-  #   assert(@game.four_in_a_row?(@cpu, ['c1', 'c2', 'c3']))
-  #   @game.grid['a1'] = @cpu
-  #   @game.grid['b1'] = @cpu
-  #   @game.grid['c1'] = @cpu
-  #   assert(@game.four_in_a_row?(@cpu, ['a1', 'b1', 'c1']))
-  #   @game.grid['a2'] = @cpu
-  #   @game.grid['b2'] = @cpu
-  #   @game.grid['c2'] = @cpu
-  #   assert(@game.four_in_a_row?(@cpu, ['a2', 'b2', 'c2']))
-  #   @game.grid['a3'] = @cpu
-  #   @game.grid['b3'] = @cpu
-  #   @game.grid['c3'] = @cpu
-  #   assert(@game.four_in_a_row?(@cpu, ['a3', 'b3', 'c3']))
+  end
+
+  def test_cpu_four_in_a_row_2
+    assert(!@game.four_in_a_row?(@cpu))
+
+    @game.grid['b1'] = @cpu
+    @game.grid['b2'] = @cpu
+    @game.grid['b3'] = @cpu
+    @game.grid['b4'] = @cpu
+
+    assert(@game.four_in_a_row?(@cpu))
+  end
+
+  def test_cpu_four_in_a_row_3
+    assert(!@game.four_in_a_row?(@cpu))
+
+    @game.grid['c1'] = @cpu
+    @game.grid['c2'] = @cpu
+    @game.grid['c3'] = @cpu
+    @game.grid['c4'] = @cpu
+
+    assert(@game.four_in_a_row?(@cpu))
+  end
+
+  def test_cpu_four_in_a_row_4
+    assert(!@game.four_in_a_row?(@cpu))
+
+    @game.grid['a1'] = @cpu
+    @game.grid['b1'] = @cpu
+    @game.grid['c1'] = @cpu
+    @game.grid['d1'] = @cpu
+
+    assert(@game.four_in_a_row?(@cpu))
+  end
+
+  def test_cpu_four_in_a_row_5
+    assert(!@game.four_in_a_row?(@cpu))
+
+    @game.grid['a2'] = @cpu
+    @game.grid['b2'] = @cpu
+    @game.grid['c2'] = @cpu
+    @game.grid['d2'] = @cpu
+
+    assert(@game.four_in_a_row?(@cpu))
+  end
+
+  def test_cpu_four_in_a_row_6
+    assert(!@game.four_in_a_row?(@cpu))
+
+    @game.grid['a3'] = @cpu
+    @game.grid['b3'] = @cpu
+    @game.grid['c3'] = @cpu
+    @game.grid['d3'] = @cpu
+
+    assert(@game.four_in_a_row?(@cpu))
+  end
+
+  def test_player_four_in_a_row_7
+    assert(!@game.four_in_a_row?(@player_1))
+
+    @game.grid['a4'] = @cpu
+    @game.grid['b4'] = @cpu
+    @game.grid['c4'] = @cpu
+    @game.grid['d4'] = @cpu
+
+    assert(@game.four_in_a_row?(@player_1))
+  end
+
+
+  def test_cpu_four_in_a_row_8
+    assert(!@game.four_in_a_row?(@cpu))
+
+    @game.grid['d1'] = @cpu
+    @game.grid['d2'] = @cpu
+    @game.grid['d3'] = @cpu
+    @game.grid['d4'] = @cpu
+
+    assert(@game.four_in_a_row?(@cpu))
   end
 
   def test_win

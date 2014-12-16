@@ -65,10 +65,6 @@ class Game
     end
   end
 
-  def reset_grid
-    @grid = get_grid
-  end
-
   def get_player_input(position)
     if valid_move?(position)
       process_move(position)
@@ -153,9 +149,9 @@ class Game
 
   def get_grid
     if @size == '4x4'
-      GRID_4X4
+      GRID_4X4.dup
     else
-      GRID_3X3
+      GRID_3X3.dup
     end
   end
 

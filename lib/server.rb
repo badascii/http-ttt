@@ -118,7 +118,6 @@ class Server < GServer
   def build_new_game(path, post_data)
     param_hash = parse_param_string(post_data)
     game       = Game.new(param_hash)
-    game.reset_grid
 
     game.write_template(path)
     store_game(game)
