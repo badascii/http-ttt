@@ -1,3 +1,5 @@
+require 'erb'
+
 class Game
 
   GRID_3X3 = {
@@ -63,6 +65,10 @@ class Game
     end
   end
 
+  def reset_grid
+    @grid = get_grid
+  end
+
   def get_player_input(position)
     if valid_move?(position)
       process_move(position)
@@ -89,7 +95,7 @@ class Game
     @grid[position.downcase] = @turn
     @message = 'Movement accepted.'
     if @mode == 'cpu'
-      cpu_turn
+      cpu_turn if !grid_full?
     else
       switch_turns
     end
@@ -323,5 +329,5 @@ class Game
   def get_binding
     binding
   end
-  
+
 end

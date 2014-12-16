@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'minitest/spec'
 require 'erb'
-require_relative '../lib/game.rb'
+require_relative '../lib/game'
 
 class TestGame < MiniTest::Test
 

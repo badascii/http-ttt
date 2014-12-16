@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'minitest/spec'
 require 'erb'
-require_relative '../lib/game.rb'
+require_relative '../lib/game'
 
 class TestGame < MiniTest::Test
 
@@ -34,6 +34,18 @@ class TestGame < MiniTest::Test
   def test_setting_grid
     @game.grid['a1'] = @game.player_1
     assert_equal(@game.grid['a1'], @game.player_1)
+  end
+
+  def test_reset_grid
+    assert_equal(false, @game.grid_full?)
+    @game.grid.keys.each do |position|
+      @game.grid[position] = @game.player_1
+    end
+    assert_equal(true, @game.grid_full?)
+
+    @game.reset_grid
+    
+    assert_equal(false, @game.grid_full?)
   end
 
   def test_marks
