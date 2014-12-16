@@ -42,11 +42,6 @@ class Server < GServer
     end
   end
 
-  def content_type(path)
-    ext = File.extname(path).split('.').last
-    CONTENT_TYPES.fetch(ext, DEFAULT_CONTENT_TYPE)
-  end
-
   def requested_file(line)
     request_uri  = line.split(' ')[1]
     path         = URI.unescape(URI(request_uri).path)
@@ -74,6 +69,11 @@ class Server < GServer
 
       IO.copy_stream(file, client)
     end
+  end
+
+  def content_type(path)
+    ext = File.extname(path).split('.').last
+    CONTENT_TYPES.fetch(ext, DEFAULT_CONTENT_TYPE)
   end
 
   def file_not_found(client)
@@ -119,6 +119,7 @@ class Server < GServer
   def build_new_game(path, post_data)
     param_hash = parse_param_string(post_data)
     game       = Game.new(param_hash)
+    puts game.grid
 
     game.write_template(path)
     store_game(game)
@@ -127,7 +128,6 @@ class Server < GServer
   def build_existing_game(path, post_data)
     param_hash = parse_param_string(post_data)
     game       = retrieve_game(param_hash[:id])
-
     game.round(param_hash[:grid_position])
     game.write_template(path)
     store_game(game)

@@ -1,45 +1,315 @@
-require_relative 'game_3x3.rb'
-require_relative 'game_4x4.rb'
-
 class Game
+
+  GRID_3X3 = {
+    'a1' => ' ', 'b1' => ' ', 'c1' => ' ',
+    'a2' => ' ', 'b2' => ' ', 'c2' => ' ',
+    'a3' => ' ', 'b3' => ' ', 'c3' => ' '}
+
+  GRID_4X4 = {
+    'a1' => ' ', 'b1' => ' ', 'c1' => ' ', 'd1' => ' ',
+    'a2' => ' ', 'b2' => ' ', 'c2' => ' ', 'd2' => ' ',
+    'a3' => ' ', 'b3' => ' ', 'c3' => ' ', 'd3' => ' ',
+    'a4' => ' ', 'b4' => ' ', 'c4' => ' ', 'd4' => ' '}
+
+  WIN_CONDITIONS_3X3 = [
+    ['a1', 'a2', 'a3'], # 0 vertical win
+    ['b1', 'b2', 'b3'], # 1 vertical win
+    ['c1', 'c2', 'c3'], # 2 vertical win
+    ['a1', 'b1', 'c1'], # 3 horizontal win
+    ['a2', 'b2', 'c2'], # 4 horizontal win
+    ['a3', 'b3', 'c3'], # 5 horizontal win
+    ['a1', 'b2', 'c3'], # 6 diagonal win
+    ['a3', 'b2', 'c1']] # 7 diagonal win
+
+  WIN_CONDITIONS_4X4 = [
+    ['a1', 'a2', 'a3', 'a4'], # 0 vertical win
+    ['b1', 'b2', 'b3', 'b4'], # 1 vertical win
+    ['c1', 'c2', 'c3', 'c4'], # 2 vertical win
+    ['d1', 'd2', 'd3', 'd4'], # 3 vertical win
+    ['a1', 'b1', 'c1', 'd1'], # 4 horizontal win
+    ['a2', 'b2', 'c2', 'd2'], # 5 horizontal win
+    ['a3', 'b3', 'c3', 'd3'], # 6 horizontal win
+    ['a4', 'b4', 'c4', 'd4'], # 7 horizontal win
+    ['a1', 'b2', 'c3', 'd4'], # 8 diagonal win
+    ['a4', 'b3', 'c2', 'd1']] # 9 diagonal win
+
+  POSITION_REGEX_3X3         = /[abc][1-3]/i
+  POSITION_REGEX_REVERSE_3X3 = /[1-3][abc]/i
+  POSITION_REGEX_4X4         = /[abcd][1-4]/i
+  POSITION_REGEX_REVERSE_4X4 = /[1-4][abcd]/i
 
   attr_accessor :grid, :player_1, :player_2, :cpu, :mode, :size, :turn, :message, :result, :id
 
   def initialize(opts)
-    @size     = opts[:size]
-    @mode     = opts[:mode]
-    @turn     = opts[:turn]
-    @grid     = opts[:grid] || get_grid(@size)
     @player_1 = 'X'
     @player_2 = 'O'
     @cpu      = 'O'
+    @size     = opts[:size]
+    @mode     = opts[:mode]
+    @turn     = opts[:turn] || @player_1
+    @grid     = get_grid
     @result   = nil
     @message  = opts[:message] || 'Welcome to the Fields of Strife'
-    @id       = opts[:id] || '1'
+    @id       = opts[:id] || '1' #TODO: pass in incremental IDs when created
   end
 
   def round(position)
-    game     = game_class.new(session_hash)
-    game.round(position)
-    @grid    = game.grid
-    @mode    = game.mode
-    @size    = game.size
-    @turn    = game.turn
-    @message = game.message
-    @result  = game.result
-    @id      = game.id
+    if @mode == 'human'
+      get_player_input(position)
+      human_results
+    elsif @mode == 'cpu'
+      get_player_input(position)
+      cpu_results
+    end
   end
 
-  def session_hash
-    {
-      size:    @size,
-      mode:    @mode,
-      turn:    @turn,
-      message: @message,
-      result:  @result,
-      grid:    @grid,
-      id:      @id
-    }
+  def get_player_input(position)
+    if valid_move?(position)
+      process_move(position)
+    elsif valid_position_format?(position)
+      @message = 'Invalid input. That position is taken.'
+    else
+      @message = 'Invalid input. That is not a valid position.'
+    end
+  end
+
+  def valid_move?(position)
+    (valid_position_format?(position)) && (@grid[position.downcase] == ' ')
+  end
+
+  def valid_position_format?(position)
+    if @size == '3x3'
+      (position =~ POSITION_REGEX_3X3) || (position =~ POSITION_REGEX_REVERSE_3X3)
+    elsif @size == '4x4'
+      (position =~ POSITION_REGEX_4X4) || (position =~ POSITION_REGEX_REVERSE_4X4)
+    end
+  end
+
+  def process_move(position)
+    @grid[position.downcase] = @turn
+    @message = 'Movement accepted.'
+    if @mode == 'cpu'
+      cpu_turn
+    else
+      switch_turns
+    end
+  end
+
+  def switch_turns
+    if @turn == @player_1
+      @turn = @player_2
+    elsif @turn == @player_2
+      @turn = @player_1
+    end
+  end
+
+  def human_results
+    if win?(@player_1)
+      @result = "#{@player_1} wins! Congrats!"
+    elsif win?(@cpu)
+      @result = "#{@player_2} wins! Congrats!"
+    elsif grid_full?
+      @result = 'Stalemate'
+    end
+  end
+
+  def cpu_results
+    if win?(@player_1)
+      @result = 'You win. Congrats!'
+    elsif win?(@cpu)
+      @result = 'You lose. Really?'
+    elsif grid_full?
+      @result = 'Stalemate'
+    end
+  end
+
+  def win?(mark)
+    if @size == '3x3'
+      three_in_a_row?(mark)
+    elsif @size == '4x4'
+      four_in_a_row?(mark)
+    end
+  end
+
+  def three_in_a_row?(mark)
+    WIN_CONDITIONS_3X3.each do |win_condition|
+      return true if (@grid[win_condition[0]] == mark) && (@grid[win_condition[1]] == mark) && (@grid[win_condition[2]] == mark)
+    end
+    return false
+  end
+
+  def four_in_a_row?(mark)
+    WIN_CONDITIONS_4X4.each do |win_condition|
+      return true if (@grid[win_condition[0]] == mark) && (@grid[win_condition[1]] == mark) && (@grid[win_condition[2]] == mark) && (@grid[win_condition[3]] == mark)
+    end
+    return false
+  end
+
+  def get_grid
+    if @size == '4x4'
+      GRID_4X4
+    else
+      GRID_3X3
+    end
+  end
+
+  def start_of_game?
+    @grid.values.uniq.length == 2
+  end
+
+  def grid_full?
+    !@grid.has_value?(' ')
+  end
+
+  def cpu_turn
+    if @size == '3x3'
+      win  = cpu_check_for_win_3x3(@cpu)
+      loss = cpu_check_for_win_3x3(@player_1)
+    elsif @size == '4x4'
+      win  = cpu_check_for_win_4x4(@cpu)
+      loss = cpu_check_for_win_4x4(@player_1)
+    end
+
+    if start_of_game?
+      opening_move
+    elsif win
+      @grid[win] = @cpu
+    elsif loss
+      @grid[loss] = @cpu
+    elsif corner_defense?
+      place_corner_defense
+    elsif (side_defense_3x3? || side_defense_4x4?)
+      place_side_defense
+    elsif (opposite_corners_3x3? || opposite_corners_4x4?)
+      @grid['a2'] = @cpu
+    else
+      optimal_move
+    end
+  end
+
+  def cpu_check_for_win_3x3(mark)
+    move = nil
+    WIN_CONDITIONS_3X3.each do |condition|
+      occupied_spaces = []
+      open_space = false
+      condition.each do |position|
+        open_space = true if position_empty?(position)
+        occupied_spaces << position if @grid[position] == mark
+      end
+      if occupied_spaces.length == 2 && open_space == true
+        move = condition - occupied_spaces
+        return move.first
+      end
+    end
+    return move
+  end
+
+  def cpu_check_for_win_4x4(mark)
+    move = nil
+    WIN_CONDITIONS_4X4.each do |condition|
+      occupied_spaces = []
+      open_space = false
+      condition.each do |position|
+        open_space = true if position_empty?(position)
+        occupied_spaces << position if @grid[position] == mark
+      end
+      if occupied_spaces.length == 3 && open_space == true
+        move = condition - occupied_spaces
+        return move.first
+      end
+    end
+    return move
+  end
+
+  def opening_move
+    if position_empty?('b2')
+      @grid['b2'] = @cpu
+    else
+      @grid['a1'] = @cpu
+    end
+  end
+
+  def place_side_defense
+    if @grid['a2'] == ' '
+      @grid['a2'] = @cpu
+    elsif @grid['b1'] == ' '
+      @grid['b1'] = @cpu
+    elsif @grid['b3'] == ' '
+      @grid['b3'] = @cpu
+    elsif @grid['c2'] == ' '
+      @grid['c2'] = @cpu
+    else
+      optimal_move
+    end
+  end
+
+  def place_corner_defense
+    if @grid['a1'] == ' '
+      @grid['a1'] = @cpu
+    elsif @grid['c1'] == ' '
+      @grid['c1'] = @cpu
+    elsif @grid['a3'] == ' '
+     @grid['a3'] = @cpu
+    elsif @grid['c3'] == ' '
+      @grid['c3'] = @cpu
+    else
+      optimal_move
+    end
+  end
+
+  def optimal_move
+    if position_empty?('b1') && position_empty?('b3')
+      @grid['b3'] = @cpu
+    elsif position_empty?('a2') && position_empty?('c2')
+      @grid['c2'] = @cpu
+    else
+      find_empty_position
+    end
+  end
+
+  def position_empty?(position)
+    @grid[position] == ' '
+  end
+
+  def find_empty_position
+    @grid.each do |key, value|
+      if value == ' '
+        @grid[key] = @cpu
+        break
+      end
+    end
+  end
+
+  def corner_defense?
+    side_positions = [@grid['a2'], @grid['b1'], @grid['b3'], @grid['c2']]
+    side_positions.count(' ') == 1
+  end
+
+  def side_defense_3x3?
+    corner_positions = [@grid['a1'], @grid['a3'], @grid['c1'], @grid['c3']]
+    side_positions   = [@grid['a2'], @grid['b1'], @grid['b3'], @grid['c2']]
+    (@grid['b2'] == @cpu) && (corner_positions.uniq.count == 2) && (side_positions.uniq.count == 3)
+  end
+
+  def side_defense_4x4?
+    corner_positions = [@grid['a1'], @grid['a4'], @grid['d1'], @grid['d4']]
+    side_positions   = [@grid['a2'], @grid['a3'], @grid['b1'], @grid['b4'], @grid['c1'], @grid['c4'], @grid['d2'], @grid['d3']]
+    (@grid['b2'] == @cpu) && (corner_positions.uniq.count == 2) && (side_positions.uniq.count == 3)
+  end
+
+  def opposite_corners_3x3?
+    (@grid['a1'] == @player_1 && @grid['c3'] == @player_1) ||
+    (@grid['a3'] == @player_1 && @grid['c1'] == @player_1)
+  end
+
+  def opposite_corners_4x4?
+    (@grid['a1'] == @player_1 && @grid['c4'] == @player_1) ||
+    (@grid['a4'] == @player_1 && @grid['c1'] == @player_1)
+  end
+
+  def write_template(path)
+    html = build_template
+    File.write(path, html)
   end
 
   def build_template
@@ -50,31 +320,8 @@ class Game
     return html
   end
 
-  def write_template(path)
-    html = build_template
-    File.write(path, html)
-  end
-
-  private
-
-  def game_class
-    if @size == '4x4'
-      Game4x4
-    else
-      Game3x3
-    end
-  end
-
-  def get_grid(size)
-    if size == '4x4'
-      Game4x4::GRID
-    else
-      Game3x3::GRID
-    end
-  end
-
   def get_binding
     binding
   end
-
+  
 end
