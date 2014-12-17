@@ -308,12 +308,42 @@ class TestGame < MiniTest::Test
     assert_equal(@game.cpu, @game.grid['c3'])
   end
 
-  def test_cpu_results
+  def test_cpu_results_1
+    expected_result = 'You win. Congrats!'
+
+    @game.grid.keys.each do |position|
+      @game.grid[position] = @game.player_1
+    end
+
+    result = @game.cpu_results
+
+    assert_equal(expected_result, result)
+  end
+
+  def test_cpu_results_2
     expected_result = 'You lose. Really?'
 
     @game.grid.keys.each do |position|
       @game.grid[position] = @game.cpu
     end
+
+    result = @game.cpu_results
+
+    assert_equal(expected_result, result)
+  end
+
+  def test_cpu_results_3
+    expected_result = 'Stalemate'
+
+    @game.grid['a1'] = @game.cpu
+    @game.grid['a2'] = @game.cpu
+    @game.grid['a3'] = @game.player_1
+    @game.grid['b1'] = @game.player_1
+    @game.grid['b2'] = @game.player_1
+    @game.grid['b3'] = @game.cpu
+    @game.grid['c1'] = @game.cpu
+    @game.grid['c2'] = @game.player_1
+    @game.grid['c3'] = @game.cpu
 
     result = @game.cpu_results
 
