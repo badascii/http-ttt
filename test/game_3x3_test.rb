@@ -350,7 +350,7 @@ class TestGame < MiniTest::Test
     assert_equal(expected_result, result)
   end
 
-  def test_human_results
+  def test_human_results_1
     expected_result = 'X wins! Congrats!'
 
     opts   = { size: '3x3',
@@ -362,6 +362,40 @@ class TestGame < MiniTest::Test
     end
 
     result = game.human_results
+
+    assert_equal(expected_result, result)
+  end
+
+  def test_human_results_2
+    expected_result = 'O wins! Congrats!'
+
+    opts   = { size: '3x3',
+               mode: 'human' }
+    game   = Game.new(opts)
+
+    game.grid.keys.each do |position|
+      game.grid[position] = game.player_2
+    end
+
+    result = game.human_results
+
+    assert_equal(expected_result, result)
+  end
+
+  def test_human_results_3
+    expected_result = 'Stalemate'
+
+    @game.grid['a1'] = @game.player_2
+    @game.grid['a2'] = @game.player_2
+    @game.grid['a3'] = @game.player_1
+    @game.grid['b1'] = @game.player_1
+    @game.grid['b2'] = @game.player_1
+    @game.grid['b3'] = @game.player_2
+    @game.grid['c1'] = @game.player_2
+    @game.grid['c2'] = @game.player_1
+    @game.grid['c3'] = @game.player_2
+
+    result = @game.human_results
 
     assert_equal(expected_result, result)
   end
