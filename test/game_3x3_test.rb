@@ -240,4 +240,12 @@ class TestGame < MiniTest::Test
     assert(@game.opposite_corners?)
   end
 
+  def test_find_empty_position
+    assert_equal(' ', @game.grid['c3'])
+
+    @game.find_empty_position
+
+    assert_equal(@game.cpu, @game.grid['c3'])
+  end
+
 end

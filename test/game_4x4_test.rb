@@ -288,4 +288,12 @@ class TestGame < MiniTest::Test
     assert(@game.side_defense_4x4?)
   end
 
+  def test_find_empty_position
+    assert_equal(' ', @game.grid['d4'])
+
+    @game.find_empty_position
+
+    assert_equal(@game.cpu, @game.grid['d4'])
+  end
+
 end
