@@ -250,11 +250,19 @@ class TestGame < MiniTest::Test
     @game.grid['d2'] = @game.player_1
     @game.grid['d3'] = @game.player_1
 
-    win  = @game.cpu_check_for_win_4x4(@game.cpu)
-    loss = @game.cpu_check_for_win_4x4(@game.player_1)
+    win  = @game.cpu_check_for_win(@game.cpu)
+    loss = @game.cpu_check_for_win(@game.player_1)
 
     assert_equal('a4', win)
     assert_equal('d4', loss)
+  end
+
+  def test_get_win_conditions
+    assert_equal(Game::WIN_CONDITIONS_4X4, @game.get_win_conditions)
+  end
+
+  def test_get_win_length
+    assert_equal(3, @game.get_win_length)
   end
 
   def test_cpu_opening_move

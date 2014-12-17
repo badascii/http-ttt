@@ -164,13 +164,8 @@ class Game
   end
 
   def cpu_turn
-    if @size == '3x3'
-      win  = cpu_check_for_win_3x3(@cpu)
-      loss = cpu_check_for_win_3x3(@player_1)
-    elsif @size == '4x4'
-      win  = cpu_check_for_win_4x4(@cpu)
-      loss = cpu_check_for_win_4x4(@player_1)
-    end
+    win  = cpu_check_for_win(@cpu)
+    loss = cpu_check_for_win(@player_1)
 
     if start_of_game?
       opening_move
@@ -189,16 +184,19 @@ class Game
     end
   end
 
-  def cpu_check_for_win_3x3(mark)
-    move = nil
-    WIN_CONDITIONS_3X3.each do |condition|
+  def cpu_check_for_win(mark)
+    move           = nil
+    win_conditions = get_win_conditions
+    win_length     = get_win_length
+
+    win_conditions.each do |condition|
       occupied_spaces = []
       open_space = false
       condition.each do |position|
         open_space = true if position_empty?(position)
         occupied_spaces << position if @grid[position] == mark
       end
-      if occupied_spaces.length == 2 && open_space == true
+      if occupied_spaces.length == win_length && open_space == true
         move = condition - occupied_spaces
         return move.first
       end
@@ -206,21 +204,20 @@ class Game
     return move
   end
 
-  def cpu_check_for_win_4x4(mark)
-    move = nil
-    WIN_CONDITIONS_4X4.each do |condition|
-      occupied_spaces = []
-      open_space = false
-      condition.each do |position|
-        open_space = true if position_empty?(position)
-        occupied_spaces << position if @grid[position] == mark
-      end
-      if occupied_spaces.length == 3 && open_space == true
-        move = condition - occupied_spaces
-        return move.first
-      end
+  def get_win_conditions
+    if @size == '3x3'
+      WIN_CONDITIONS_3X3.dup
+    elsif @size == '4x4'
+      WIN_CONDITIONS_4X4.dup
     end
-    return move
+  end
+
+  def get_win_length
+    if @size == '3x3'
+      2
+    elsif @size == '4x4'
+      3
+    end
   end
 
   def opening_move
