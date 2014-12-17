@@ -32,7 +32,7 @@ class Server < GServer
       puts line
 
       if line.include?('POST')
-        post_data = fetch_post_data(path, client)
+        post_data = fetch_post_data(client)
         build_page(path, post_data)
       end
 
@@ -91,7 +91,7 @@ class Server < GServer
     "Connection: close\r\n"
   end
 
-  def fetch_post_data(path, client)
+  def fetch_post_data(client)
     line        = client.readline
     header_hash = {}
 
