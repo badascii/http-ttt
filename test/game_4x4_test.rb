@@ -37,7 +37,6 @@ class TestGame < MiniTest::Test
     assert_equal(Game::GRID_4X4, grid)
   end
 
-
   def test_setting_grid
     @game.grid['a1'] = @game.player_1
     assert_equal(@game.grid['a1'], @game.player_1)
@@ -47,6 +46,22 @@ class TestGame < MiniTest::Test
     assert(@game.player_1 != @game.cpu)
     assert_equal(@game.player_1, 'X')
     assert_equal(@game.cpu, 'O')
+  end
+
+ def test_player_input_position_taken
+    expected_message       = 'Invalid input. That position is taken.'
+    @game.grid['a1']       = @game.cpu
+    position_taken_message = @game.get_player_input('a1')
+
+    assert_equal(expected_message, position_taken_message)
+  end
+
+  def test_player_invalid_input
+    expected_message       = 'Invalid input. That is not a valid position.'
+    invalid_input_message  = @game.get_player_input('asdf')
+
+    assert_equal(expected_message, invalid_input_message)
+
   end
 
   def test_position_empty
