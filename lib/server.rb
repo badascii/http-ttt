@@ -76,6 +76,13 @@ class Server < GServer
   end
 
   def fetch_post_data(client)
+    content_length = get_content_length(client)
+    post_data      = client.read(content_length)
+
+    return post_data
+  end
+
+  def get_content_length(client)
     line        = client.readline
     header_hash = {}
 
@@ -85,15 +92,12 @@ class Server < GServer
       line = client.readline
     end
 
-    content_length = header_hash['Content-Length'].to_i
-    post_data      = client.read(content_length)
-
-    return post_data
+    return header_hash['Content-Length'].to_i
   end
 
   def parse_param_string(param_string)
-    param_hash      = {}
     array_of_params = param_string.split('&')
+    param_hash      = {}
 
     array_of_params.each do |param|
       key   = param.split('=')[0]
