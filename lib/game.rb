@@ -46,13 +46,13 @@ class Game
     @player_1 = 'X'
     @player_2 = 'O'
     @cpu      = 'O'
+    @message  = 'Welcome to the Fields of Strife'
+    @result   = nil
+    @turn     = @player_1
     @size     = opts[:size]
     @mode     = opts[:mode]
-    @turn     = opts[:turn] || @player_1
-    @grid     = get_grid
-    @result   = nil
-    @message  = opts[:message] || 'Welcome to the Fields of Strife'
     @id       = opts[:id] || '1'
+    @grid     = get_grid
   end
 
   def round(position)
