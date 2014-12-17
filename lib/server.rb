@@ -70,7 +70,7 @@ class Server < GServer
 
   def process_post(path, client)
     post_data = fetch_post_data(client)
-    params    = parse_param_string(post_data)
+    params    = parse_post_data(post_data)
 
     build_page(path, params)
   end
@@ -95,17 +95,17 @@ class Server < GServer
     return header_hash['Content-Length'].to_i
   end
 
-  def parse_param_string(param_string)
-    array_of_params = param_string.split('&')
-    param_hash      = {}
+  def parse_post_data(post_data)
+    post_data_array = post_data.split('&')
+    params          = {}
 
-    array_of_params.each do |param|
+    post_data_array.each do |param|
       key   = param.split('=')[0]
       value = param.split('=')[1]
-      param_hash[key.to_sym] = value
+      params[key.to_sym] = value
     end
 
-    return param_hash
+    return params
   end
 
   def build_page(path, params)
@@ -183,6 +183,4 @@ class Server < GServer
       IO.copy_stream(file, client)
     end
   end
-
-
 end

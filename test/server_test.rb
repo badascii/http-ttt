@@ -58,19 +58,19 @@ class TestServer < MiniTest::Test
     assert_equal(false, @server.valid_file?(invalid_path))
   end
 
-  def test_parse_starting_param_string
+  def test_parse_starting_post_data
     expected_hash = { mode: 'cpu',
-                      size: '3x3'}
-    param_string  = 'mode=cpu&size=3x3'
-    param_hash    = @server.parse_param_string(param_string)
+                      size: '3x3' }
+    post_data     = 'mode=cpu&size=3x3'
+    param_hash    = @server.parse_post_data(post_data)
 
     assert_equal(expected_hash, param_hash)
   end
 
-  def test_parse_move_param_string
-    expected_hash = { grid_position: 'a1'}
-    param_string  = 'grid_position=a1'
-    param_hash    = @server.parse_param_string(param_string)
+  def test_parse_move_post_data
+    expected_hash = { grid_position: 'a1' }
+    post_data     = 'grid_position=a1'
+    param_hash    = @server.parse_post_data(post_data)
 
     assert_equal(expected_hash, param_hash)
   end
@@ -129,5 +129,4 @@ class TestServer < MiniTest::Test
 
     assert_equal(retrieved_game, expected_game)
   end
-
 end

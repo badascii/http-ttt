@@ -320,5 +320,4 @@ class Game
   def get_binding
     binding
   end
-
 end

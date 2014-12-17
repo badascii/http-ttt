@@ -318,5 +318,4 @@ class TestGame < MiniTest::Test
 
     assert_equal(@game.cpu, @game.grid['d4'])
   end
-
 end
