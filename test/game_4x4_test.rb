@@ -326,6 +326,18 @@ class TestGame < MiniTest::Test
     assert_equal(@game.cpu, @game.grid['d4'])
   end
 
+  def test_cpu_results
+    expected_result = 'You lose. Really?'
+
+    @game.grid.keys.each do |position|
+      @game.grid[position] = @game.cpu
+    end
+
+    result = @game.cpu_results
+
+    assert_equal(expected_result, result)
+  end
+
   def test_human_results
     expected_result = 'X wins! Congrats!'
 
