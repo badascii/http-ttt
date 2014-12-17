@@ -32,9 +32,7 @@ class Server < GServer
       puts line
 
       if line.include?('POST')
-        post_data = fetch_post_data(client)
-        params    = parse_param_string(post_data)
-        build_page(path, params)
+        process_post(path, client)
       end
 
       puts "Got request for: #{path}"
@@ -43,32 +41,10 @@ class Server < GServer
   end
 
   def requested_file(line)
-    request_uri  = line.split(' ')[1]
-    path         = URI.unescape(URI(request_uri).path)
+    request_uri = line.split(' ')[1]
+    path        = URI.unescape(URI(request_uri).path)
 
     File.join(ROOT, path)
-  end
-
-  def send_response(path, client)
-    if valid_file?(path)
-      serve_file(path, client)
-    else
-      file_not_found(client)
-    end
-  end
-
-  def valid_file?(path)
-    File.exist?(path) && !File.directory?(path)
-  end
-
-  def serve_file(path, client)
-    File.open(path, 'rb') do |file|
-      header = build_header(200, content_type(file), file.size)
-      client.print(header)
-      client.print("\r\n")
-
-      IO.copy_stream(file, client)
-    end
   end
 
   def content_type(path)
@@ -92,6 +68,13 @@ class Server < GServer
     "Connection: close\r\n"
   end
 
+  def process_post(path, client)
+    post_data = fetch_post_data(client)
+    params    = parse_param_string(post_data)
+
+    build_page(path, params)
+  end
+
   def fetch_post_data(client)
     line        = client.readline
     header_hash = {}
@@ -106,6 +89,19 @@ class Server < GServer
     post_data      = client.read(content_length)
 
     return post_data
+  end
+
+  def parse_param_string(param_string)
+    param_hash      = {}
+    array_of_params = param_string.split('&')
+
+    array_of_params.each do |param|
+      key   = param.split('=')[0]
+      value = param.split('=')[1]
+      param_hash[key.to_sym] = value
+    end
+
+    return param_hash
   end
 
   def build_page(path, params)
@@ -146,19 +142,6 @@ class Server < GServer
     store_game(game)
   end
 
-  def parse_param_string(param_string)
-    param_hash      = {}
-    array_of_params = param_string.split('&')
-
-    array_of_params.each do |param|
-      key   = param.split('=')[0]
-      value = param.split('=')[1]
-      param_hash[key.to_sym] = value
-    end
-
-    return param_hash
-  end
-
   def self.hash_of_games
     @@hash_of_games
   end
@@ -174,5 +157,28 @@ class Server < GServer
   def self.clear_games
     @@hash_of_games = {}
   end
+
+  def send_response(path, client)
+    if valid_file?(path)
+      serve_file(path, client)
+    else
+      file_not_found(client)
+    end
+  end
+
+  def valid_file?(path)
+    File.exist?(path) && !File.directory?(path)
+  end
+
+  def serve_file(path, client)
+    File.open(path, 'rb') do |file|
+      header = build_header(200, content_type(file), file.size)
+      client.print(header)
+      client.print("\r\n")
+
+      IO.copy_stream(file, client)
+    end
+  end
+
 
 end
