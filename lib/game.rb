@@ -89,7 +89,7 @@ class Game
 
   def process_move(position)
     @grid[position.downcase] = @turn
-    @message = 'Movement accepted.'
+    @message = 'Move accepted.'
     if @mode == 'cpu'
       cpu_turn if !grid_full?
     else
@@ -290,12 +290,15 @@ class Game
   def side_defense_3x3?
     corner_positions = [@grid['a1'], @grid['a3'], @grid['c1'], @grid['c3']]
     side_positions   = [@grid['a2'], @grid['b1'], @grid['b3'], @grid['c2']]
+
     (@grid['b2'] == @cpu) && (corner_positions.uniq.count == 2) && (side_positions.uniq.count == 3)
   end
 
   def side_defense_4x4?
     corner_positions = [@grid['a1'], @grid['a4'], @grid['d1'], @grid['d4']]
-    side_positions   = [@grid['a2'], @grid['a3'], @grid['b1'], @grid['b4'], @grid['c1'], @grid['c4'], @grid['d2'], @grid['d3']]
+    side_positions   = [@grid['a2'], @grid['a3'], @grid['b1'], @grid['b4'],
+                        @grid['c1'], @grid['c4'], @grid['d2'], @grid['d3']]
+
     (@grid['b2'] == @cpu) && (corner_positions.uniq.count == 2) && (side_positions.uniq.count == 3)
   end
 
