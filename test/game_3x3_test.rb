@@ -80,11 +80,11 @@ class TestGame < MiniTest::Test
   end
 
   def test_valid_position_format
-    if @size == '3x3'
-      (position =~ POSITION_REGEX_3X3) || (position =~ POSITION_REGEX_REVERSE_3X3)
-    elsif @size == '4x4'
-      (position =~ POSITION_REGEX_4X4) || (position =~ POSITION_REGEX_REVERSE_4X4)
-    end
+    valid_position   = @game.valid_position_format?('a1')
+    invalid_position = @game.valid_position_format?('z9')
+
+    assert_equal(0, valid_position)
+    assert_equal(nil, invalid_position)
   end
 
   def test_grid_full

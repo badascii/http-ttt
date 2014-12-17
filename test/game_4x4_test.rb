@@ -78,6 +78,14 @@ class TestGame < MiniTest::Test
     assert(@game.position_empty?('c3'))
   end
 
+  def test_valid_position_format
+    valid_position   = @game.valid_position_format?('a1')
+    invalid_position = @game.valid_position_format?('z9')
+
+    assert_equal(0, valid_position)
+    assert_equal(nil, invalid_position)
+  end
+
   def test_grid_full
     assert_equal(false, @game.grid_full?)
 
