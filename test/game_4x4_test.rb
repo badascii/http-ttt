@@ -31,6 +31,13 @@ class TestGame < MiniTest::Test
     assert_equal(@game.grid.length, 16)
   end
 
+  def test_get_grid
+    grid = @game.get_grid
+
+    assert_equal(Game::GRID_4X4, grid)
+  end
+
+
   def test_setting_grid
     @game.grid['a1'] = @game.player_1
     assert_equal(@game.grid['a1'], @game.player_1)

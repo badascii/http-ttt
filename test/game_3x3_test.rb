@@ -31,6 +31,12 @@ class TestGame < MiniTest::Test
     assert_equal(@game.grid.length, 9)
   end
 
+  def test_get_grid
+    grid = @game.get_grid
+
+    assert_equal(Game::GRID_3X3, grid)
+  end
+
   def test_setting_grid
     @game.grid['a1'] = @game.player_1
     assert_equal(@game.grid['a1'], @game.player_1)
@@ -46,6 +52,14 @@ class TestGame < MiniTest::Test
     assert(@game.position_empty?('a1'))
     assert(@game.position_empty?('b2'))
     assert(@game.position_empty?('c3'))
+  end
+
+  def test_valid_position_format
+    if @size == '3x3'
+      (position =~ POSITION_REGEX_3X3) || (position =~ POSITION_REGEX_REVERSE_3X3)
+    elsif @size == '4x4'
+      (position =~ POSITION_REGEX_4X4) || (position =~ POSITION_REGEX_REVERSE_4X4)
+    end
   end
 
   def test_grid_full
