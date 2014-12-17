@@ -76,27 +76,29 @@ class TestServer < MiniTest::Test
   end
 
   def test_200_header
+    expected_header = "HTTP/1.1 200 OK\r\n" +
+                      "Content-Type: application/octet-stream\r\n" +
+                      "Content-Length: 10\r\n" +
+                      "Connection: close\r\n"
     code   = 200
     type   = Server::DEFAULT_CONTENT_TYPE
     length = 10
     header = @server.build_header(code, type, length)
 
-    assert_equal(header, "HTTP/1.1 200 OK\r\n" +
-                         "Content-Type: application/octet-stream\r\n" +
-                         "Content-Length: 10\r\n" +
-                         "Connection: close\r\n")
+    assert_equal(expected_header, header)
   end
 
   def test_404_header
+    expected_header = "HTTP/1.1 404 Not Found\r\n" +
+                      "Content-Type: text/plain\r\n" +
+                      "Content-Length: 10\r\n" +
+                      "Connection: close\r\n"
     code   = 404
     type   = Server::CONTENT_TYPES['txt']
     length = 10
     header = @server.build_header(code, type, length)
 
-    assert_equal(header, "HTTP/1.1 404 Not Found\r\n" +
-                         "Content-Type: text/plain\r\n" +
-                         "Content-Length: 10\r\n" +
-                         "Connection: close\r\n")
+    assert_equal(expected_header, header)
   end
 
   def test_new_game_id
