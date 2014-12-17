@@ -282,4 +282,20 @@ class TestGame < MiniTest::Test
 
     assert_equal(@game.cpu, @game.grid['c3'])
   end
+
+  def test_human_results
+    expected_result = 'X wins! Congrats!'
+
+    opts   = { size: '3x3',
+               mode: 'human' }
+    game   = Game.new(opts)
+
+    game.grid.keys.each do |position|
+      game.grid[position] = game.player_1
+    end
+
+    result = game.human_results
+
+    assert_equal(expected_result, result)
+  end
 end
