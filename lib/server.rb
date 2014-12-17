@@ -33,7 +33,8 @@ class Server < GServer
 
       if line.include?('POST')
         post_data = fetch_post_data(client)
-        build_page(path, post_data)
+        params    = parse_param_string(post_data)
+        build_page(path, params)
       end
 
       puts "Got request for: #{path}"
@@ -107,18 +108,17 @@ class Server < GServer
     return post_data
   end
 
-  def build_page(path, post_data)
+  def build_page(path, params)
     if path == './public/start.html'
-      build_new_game(path, post_data)
+      build_new_game(path, params)
     elsif path == './public/game.html'
-      build_existing_game(path, post_data)
+      build_existing_game(path, params)
     end
   end
 
-  def build_new_game(path, post_data)
-    param_hash      = parse_param_string(post_data)
-    param_hash[:id] = new_game_id.to_s
-    game            = Game.new(param_hash)
+  def build_new_game(path, params)
+    params[:id] = new_game_id.to_s
+    game        = Game.new(params)
 
     game.write_template(path)
     store_game(game)
@@ -138,11 +138,10 @@ class Server < GServer
     end
   end
 
-  def build_existing_game(path, post_data)
-    param_hash = parse_param_string(post_data)
-    game       = retrieve_game(param_hash[:id])
+  def build_existing_game(path, params)
+    game = retrieve_game(params[:id])
 
-    game.round(param_hash[:grid_position])
+    game.round(params[:grid_position])
     game.write_template(path)
     store_game(game)
   end
