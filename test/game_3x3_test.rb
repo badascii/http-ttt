@@ -410,5 +410,9 @@ class TestGame < MiniTest::Test
     @game.switch_turns
 
     assert_equal(@game.player_2, @game.turn)
+
+    @game.switch_turns
+
+    assert_equal(@game.player_1, @game.turn)
   end
 end
