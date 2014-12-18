@@ -156,7 +156,7 @@ class Game
   end
 
   def start_of_game?
-    @grid.values.uniq.length == 2
+    @grid.values.uniq.length < 3
   end
 
   def grid_full?

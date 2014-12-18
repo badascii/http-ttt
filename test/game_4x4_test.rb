@@ -302,6 +302,15 @@ class TestGame < MiniTest::Test
     assert_equal(3, @game.get_win_length)
   end
 
+  def test_start_of_game
+    assert_equal(true, @game.start_of_game?)
+
+    @game.grid['a1'] = @game.cpu
+    @game.grid['c3'] = @game.player_1
+
+    assert_equal(false, @game.start_of_game?)
+  end
+
   def test_cpu_opening_move
     assert_equal(@game.grid['b2'], ' ')
     @game.opening_move
