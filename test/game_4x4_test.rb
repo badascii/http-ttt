@@ -86,6 +86,18 @@ class TestGame < MiniTest::Test
     assert_equal(nil, invalid_position)
   end
 
+  def test_process_move
+    opts = { size: '4x4',
+             mode: 'human' }
+    game = Game.new(opts)
+
+    game.process_move('a1')
+    game.process_move('b2')
+
+    assert_equal('X', game.grid['a1'])
+    assert_equal('O', game.grid['b2'])
+  end
+
   def test_grid_full
     assert_equal(false, @game.grid_full?)
 

@@ -70,7 +70,6 @@ class TestGame < MiniTest::Test
     invalid_input_message  = @game.get_player_input('asdf')
 
     assert_equal(expected_message, invalid_input_message)
-
   end
 
   def test_position_empty
@@ -85,6 +84,18 @@ class TestGame < MiniTest::Test
 
     assert_equal(0, valid_position)
     assert_equal(nil, invalid_position)
+  end
+
+  def test_process_move
+    opts = { size: '3x3',
+             mode: 'human' }
+    game = Game.new(opts)
+
+    game.process_move('a1')
+    game.process_move('b2')
+
+    assert_equal('X', game.grid['a1'])
+    assert_equal('O', game.grid['b2'])
   end
 
   def test_grid_full
