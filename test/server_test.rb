@@ -116,6 +116,12 @@ class TestServer < MiniTest::Test
     assert_equal(expected_header, header)
   end
 
+  def test_file_not_found
+    message = @server.file_not_found(@client)
+
+    assert_equal("File not found\n", message)
+  end
+
   def test_get_content_length
     length = @server.get_content_length(@client)
 
