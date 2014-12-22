@@ -8,6 +8,8 @@ require_relative '../test/mock_client'
 class TestServer < MiniTest::Test
   def setup
     @server = Server.new(2000, 'localhost')
+    @client = MockClient.new
+    Server.clear_games
   end
 
   def test_initialize
@@ -58,6 +60,19 @@ class TestServer < MiniTest::Test
     assert_equal(false, @server.valid_file?(invalid_path))
   end
 
+  def test_process_post
+    @server.process_post('./public/start.html', @client)
+
+    assert_equal(Server.hash_of_games.length, 1)
+  end
+
+  def test_fetch_post_data
+    post_data       = @server.fetch_post_data(@client)
+    expected_string = 'mode=cpu&size=3x3'
+
+    assert_equal(expected_string, post_data)
+  end
+
   def test_parse_starting_post_data
     expected_hash = { mode: 'cpu',
                       size: '3x3' }
@@ -102,41 +117,54 @@ class TestServer < MiniTest::Test
   end
 
   def test_get_content_length
-    length = @server.get_content_length(MockClient.new)
+    length = @server.get_content_length(@client)
 
     assert_equal(17, length)
   end
 
   def test_new_game_id
-    opts = { mode: 'cpu', size: '3x3', id: 1 }
+    assert_equal('1', @server.new_game_id)
+
+    opts = { mode: 'cpu', size: '3x3', id: '1' }
     game = Game.new(opts)
 
     @server.store_game(game)
 
-    assert_equal(2, @server.new_game_id)
+    assert_equal('2', @server.new_game_id)
   end
 
   def test_store_game
-    opts          = { mode: 'cpu', size: '3x3', id: 1 }
-    expected_game = Game.new(opts)
+    opts = { mode: 'cpu', size: '3x3', id: '1' }
+    game = Game.new(opts)
 
-    @server.store_game(expected_game)
+    @server.store_game(game)
 
-    stored_game   = Server.hash_of_games[expected_game.id]
+    stored_game = Server.hash_of_games[game.id]
 
-    assert_equal(stored_game, expected_game)
+    assert_equal(stored_game, game)
   end
 
   def test_retrieve_game
-    opts = { mode: 'cpu', size: '3x3', id: 1 }
+    opts = { mode: 'cpu', size: '3x3', id: '1' }
     game = Game.new(opts)
 
     Server.hash_of_games[game.id] = game
 
-    retrieved_game = @server.retrieve_game(1)
+    retrieved_game = @server.retrieve_game('1')
 
     assert_equal(retrieved_game, game)
   end
+
+  # def test_build_existing_game
+  #   Server.hash
+  # def build_existing_game(path, params)
+  #   game = retrieve_game(params[:id])
+
+  #   game.round(params[:grid_position])
+  #   game.write_template(path)
+  #   store_game(game)
+  # end
+  # end
 
   def test_clear_games
     opts = { mode: 'cpu', size: '3x3', id: '1' }
@@ -151,8 +179,8 @@ class TestServer < MiniTest::Test
   end
 
   def test_serve_file
-    file_size = @server.serve_file('./public/index.html', MockClient.new)
+    file_size = @server.serve_file('./public/index.html', @client)
 
-    assert_equal(17, file_size )
+    assert_equal(17, file_size)
   end
 end

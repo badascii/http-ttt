@@ -10,8 +10,8 @@ class MockClient
     return line
   end
 
-  def read(string)
-    string
+  def read(arg)
+    'mode=cpu&size=3x3'
   end
 
   def print(string)

@@ -134,7 +134,7 @@ class Server < GServer
         ids << key.to_i
       end
 
-      return ids.max + 1
+      return (ids.max + 1).to_s
     end
   end
 
