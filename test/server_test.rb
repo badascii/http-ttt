@@ -186,7 +186,7 @@ class TestServer < MiniTest::Test
 
   def test_send_response
     file_not_found   = @server.send_response('./nothing/here.txt', @client)
-    served_file_size = 17
+    served_file_size = @server.send_response('./public/index.html', @client)
 
     assert_equal("File not found\n", file_not_found)
     assert_equal(17, served_file_size)
