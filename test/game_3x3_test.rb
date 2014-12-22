@@ -270,6 +270,16 @@ class TestGame < MiniTest::Test
     assert_equal(@game.grid['a1'], @game.cpu)
   end
 
+  def test_corner_defense
+    assert_equal(false, @game.corner_defense?)
+
+    @game.grid['a2'] = @game.cpu
+    @game.grid['b1'] = @game.cpu
+    @game.grid['b3'] = @game.cpu
+
+    assert_equal(true, @game.corner_defense?)
+  end
+
   def test_cpu_optimal_move
     assert_equal(@game.grid['b1'], ' ')
     @game.optimal_move
