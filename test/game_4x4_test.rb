@@ -356,6 +356,25 @@ class TestGame < MiniTest::Test
     assert_equal(@game.grid['c2'], ' ')
     @game.place_side_defense
     assert_equal(@game.grid['c2'], @game.cpu)
+    @game.place_side_defense
+    assert_equal(@game.grid['d4'], @game.cpu)
+  end
+
+  def test_place_corner_defense
+    assert_equal(@game.grid['a1'], ' ')
+    @game.place_corner_defense
+    assert_equal(@game.grid['a1'], @game.cpu)
+    assert_equal(@game.grid['c1'], ' ')
+    @game.place_corner_defense
+    assert_equal(@game.grid['c1'], @game.cpu)
+    assert_equal(@game.grid['a3'], ' ')
+    @game.place_corner_defense
+    assert_equal(@game.grid['a3'], @game.cpu)
+    assert_equal(@game.grid['c3'], ' ')
+    @game.place_corner_defense
+    assert_equal(@game.grid['c3'], @game.cpu)
+    @game.place_corner_defense
+    assert_equal(@game.grid['b3'], @game.cpu)
   end
 
   def test_cpu_side_defense_4x4
