@@ -87,7 +87,7 @@ class Server < GServer
     header_hash = {}
 
     until line =~ /^\R$/
-      header_array = line.split(':')
+      header_array = line.split(': ')
       header_hash[header_array[0]] = header_array[1]
       line = client.readline
     end

@@ -3,9 +3,9 @@ require 'minitest/spec'
 require 'net/http'
 require_relative '../lib/server'
 require_relative '../lib/game'
+require_relative '../test/mock_client'
 
 class TestServer < MiniTest::Test
-
   def setup
     @server = Server.new(2000, 'localhost')
   end
@@ -101,6 +101,12 @@ class TestServer < MiniTest::Test
     assert_equal(expected_header, header)
   end
 
+  def test_get_content_length
+    length = @server.get_content_length(MockClient.new)
+
+    assert_equal(17, length)
+  end
+
   def test_new_game_id
     opts = { mode: 'cpu', size: '3x3', id: 1 }
     game = Game.new(opts)
@@ -122,13 +128,31 @@ class TestServer < MiniTest::Test
   end
 
   def test_retrieve_game
-    opts          = { mode: 'cpu', size: '3x3', id: 1 }
-    expected_game = Game.new(opts)
+    opts = { mode: 'cpu', size: '3x3', id: 1 }
+    game = Game.new(opts)
 
-    Server.hash_of_games[expected_game.id] = expected_game
+    Server.hash_of_games[game.id] = game
 
     retrieved_game = @server.retrieve_game(1)
 
-    assert_equal(retrieved_game, expected_game)
+    assert_equal(retrieved_game, game)
+  end
+
+  def test_clear_games
+    opts = { mode: 'cpu', size: '3x3', id: '1' }
+    game = Game.new(opts)
+    @server.store_game(game)
+
+    assert_equal(Server.hash_of_games['1'], game)
+
+    Server.clear_games
+
+    assert_equal(Server.hash_of_games, {})
+  end
+
+  def test_serve_file
+    file_size = @server.serve_file('./public/index.html', MockClient.new)
+
+    assert_equal(17, file_size )
   end
 end
