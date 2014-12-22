@@ -161,16 +161,16 @@ class TestServer < MiniTest::Test
     assert_equal(retrieved_game, game)
   end
 
-  # def test_build_existing_game
-  #   Server.hash
-  # def build_existing_game(path, params)
-  #   game = retrieve_game(params[:id])
+  def test_build_existing_game
+    opts   = { mode: 'cpu', size: '3x3', id: '1' }
+    game   = Game.new(opts)
+    params = { :id => '1', :grid_position => 'a1' }
 
-  #   game.round(params[:grid_position])
-  #   game.write_template(path)
-  #   store_game(game)
-  # end
-  # end
+    @server.store_game(game)
+    @server.build_existing_game('./public/game.html', params)
+
+    assert_equal(game.grid['a1'], 'X')
+  end
 
   def test_clear_games
     opts = { mode: 'cpu', size: '3x3', id: '1' }
@@ -182,6 +182,14 @@ class TestServer < MiniTest::Test
     Server.clear_games
 
     assert_equal(Server.hash_of_games, {})
+  end
+
+  def test_send_response
+    file_not_found   = @server.send_response('./nothing/here.txt', @client)
+    served_file_size = 17
+
+    assert_equal("File not found\n", file_not_found)
+    assert_equal(17, served_file_size)
   end
 
   def test_serve_file
