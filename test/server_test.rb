@@ -161,6 +161,17 @@ class TestServer < MiniTest::Test
     assert_equal(retrieved_game, game)
   end
 
+  def test_build_page
+    opts   = { mode: 'cpu', size: '3x3', id: '1' }
+    game   = Game.new(opts)
+    params = { :id => '1', :grid_position => 'a1' }
+
+    @server.store_game(game)
+    @server.build_page('./public/game.html', params)
+
+    assert_equal(game.grid['a1'], 'X')
+  end
+
   def test_build_existing_game
     opts   = { mode: 'cpu', size: '3x3', id: '1' }
     game   = Game.new(opts)
